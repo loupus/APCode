@@ -1,0 +1,65 @@
+﻿{
+  "data": {
+    "category": {
+      "1": "Genel",
+      "2": "Spor",
+      "3": "Ekonomi",
+      "4": "Sağlık",
+      "5": "Bilim, Teknoloji",
+      "6": "Politika",
+      "7": "Kültür, Sanat, Yaşam"
+    },
+    "language": {
+      "1": "tr_TR",
+      "10": "sq_AL",
+      "12": "es_ES",
+      "13": "fa_IR",
+      "14": "ku_IQ",
+      "15": "mk_MK",
+      "16": "id_ID",
+      "2": "en_US",
+      "3": "ar_SA",
+      "4": "bs_BA",
+      "5": "ru_RU",
+      "6": "fr_FR",
+      "9": "ku_TR"
+    },
+    "package": {
+      "1": "Genel",
+      "11": "Mobil SMS",
+      "12": "Mobil Fotoğraf",
+      "13": "Mobil Video",
+      "14": "Mobil Web Haber",
+      "15": "Mobil Ekran",
+      "16": "Mobil Duyuru",
+      "19": "Energy Terminal",
+      "2": "Özel",
+      "20": "anadoluimages.com",
+      "23": "AA Video News",
+      "3": "Yerel",
+      "5": "Internet",
+      "7": "Şirket"
+    },
+    "priority": {
+      "1": "1 Flaş",
+      "2": "3 Önemli",
+      "3": "2 Acil",
+      "4": "4 Rutin",
+      "5": "5 Özel",
+      "6": "6 Arşiv"
+    },
+    "provider": { "1": "Anadolu Ajansı" },
+    "type": {
+      "": "Ses",
+      "1": "Haber",
+      "2": "Fotoğraf",
+      "3": "Video",
+      "4": "Dosya",
+      "5": "Grafik"
+    }
+  },
+  "response": {
+    "code": 200,
+    "success": true
+  }
+}

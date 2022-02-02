@@ -1,0 +1,31 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cppbuild",
+			"label": "buildgdb",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
+			"args": [
+				"-Wall",
+				"-g",
+				"${workspaceFolder}\\*.cpp",
+				"-I${workspaceFolder}\\include",
+				"-L${workspaceFolder}\\lib",			
+				"-l:libcurl.lib",		
+				"-o",
+				"${fileDirname}\\binDebug\\APCode.exe"
+			],
+			"options": {
+				"cwd": "${fileDirname}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"detail": "compiler: C:\\msys64\\mingw64\\bin\\g++.exe"
+		}
+	]
+}
