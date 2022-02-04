@@ -94,21 +94,39 @@ public:
 		return dtss.str();
 	}
 
-	void fromString(const char *pStr)
+	bool fromString(const char *pStr)
 	{
+		if(pStr==nullptr) return false;
+		time_t tmptime;
 		std::tm t;
 		std::istringstream ss(pStr);
 		ss >> std::get_time(&t, "%Y-%m-%d %H:%M:%S");
-		localtimet = mktime(&t);
+		tmptime = mktime(&t);
+		if(tmptime !=-1)
+		{
+			localtimet = tmptime;
+			return true;
+		}
+		else
+		return false;
 	}
 
-	void fromTString(const char *pStr)
-	{
+	bool fromTString(const char *pStr)
+	{		
+		if(pStr==nullptr) return false;
+		time_t tmptime;
 		std::tm t;
 		std::istringstream ss(pStr);
 		ss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%SZ");
 		t.tm_hour += 3;   // anadolu ajansı gmt 0 çalışıyor
-		localtimet = mktime(&t);
+		tmptime = mktime(&t);
+		if(tmptime !=-1)
+		{
+			localtimet = tmptime;
+			return true;
+		}
+		else
+		return false;
 	}
 
 	time_t GetTime(bool isLocal= true)
@@ -116,7 +134,7 @@ public:
 		if(isLocal)
 			return localtimet;
 		else
-			localtimet - gmtdiff;
+			return localtimet - gmtdiff;
 	}
 
 	void SetTime(time_t pTime, bool isLocal= true)
@@ -125,6 +143,11 @@ public:
 			localtimet = pTime;
 		else
 			localtimet = pTime + gmtdiff;
+	}
+
+	void AddTime(time_t pTime)
+	{
+		localtimet += pTime;
 	}
 };
 

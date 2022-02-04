@@ -37,7 +37,7 @@ std::string Config::logFolder ;
 std::string Config::videoDownloadFolder ;
 int Config::DownloadWaitSeconds = 30;
 std::string Config::lastSearchTime;
-int Config::SearchInterval = 36000; // 60*60*10  10 dakika
+int Config::SearchInterval = 1200; // 60*10  10 dakika
 
 
 
@@ -159,7 +159,7 @@ bool Config::ReadConfig()
 	node = dconfig.select_node("//Config/DownloadWaitSeconds");
 	if (!node)
 	{
-		std::cout << "DownloadWaitSeconds not found on config ! default in use:" + std::to_string(DownloadWaitSeconds) << std::endl;	
+		std::cout << "DownloadWaitSeconds not found on config ! default in use:" << std::to_string(DownloadWaitSeconds) << std::endl;	
 			
 	}
 	else
@@ -174,7 +174,7 @@ bool Config::ReadConfig()
 		ltm->tm_hour -= 1;
 		mktime(ltm);
 		lastSearchTime = Globals::tmToStr(ltm);
-		std::cout << "lastSearchTime not found on config ! default in use: " +  lastSearchTime << std::endl;
+		std::cout << "lastSearchTime not found on config ! default in use: " <<  lastSearchTime << std::endl;
 		
 	}
 	else 	
@@ -184,7 +184,7 @@ bool Config::ReadConfig()
 	node = dconfig.select_node("//Config/SearchInterval");
 	if (!node)
 	{
-		std::cout << "SearchInterval not found on config ! default in use: " +  SearchInterval << std::endl;		
+		std::cout << "SearchInterval not found on config ! default in use: " <<  SearchInterval << std::endl;		
 	}
 	else 	
 		SearchInterval = node.node().text().as_int();

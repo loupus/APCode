@@ -36,6 +36,7 @@ void cHttpManager::ClearHeaders()
 BackObject cHttpManager::DoGet(std::string pUrl)
 {
 	BackObject back;
+	//std::cout << pUrl.c_str() << std::endl;
 	if(pUrl.empty())
 	{
 		back.ErrDesc = "Url string is empty";

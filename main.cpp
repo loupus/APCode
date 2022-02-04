@@ -6,25 +6,36 @@ void TestAccountInfo()
 {
     BackObject back;
     apapi ap;
+    if(ap.Initiliaze())
+    {
     back = ap.GetAccountInfo();
     if(!back.Success)
        std::cout << back.ErrDesc << std::endl;
+    }
+
+}
+
+void TestSearch()
+{
+    BackObject back;
+    apapi ap;
+    if(!ap.Initiliaze())
+    {
+        std::cout << "ap api initiliaze failed!" << std::endl;
+        return;
+    }
+    back = ap.Search();
+    if(!back.Success)
+       std::cout << back.ErrDesc << std::endl;
+   // else
+   //    std::cout << back.StrValue << std::endl;
 }
 
 int main()
 {
     std::cout << "AP Code starting" << std::endl;
     Config::ReadConfig();
-    
-        time_t now_t = 0;
-        time_t gnow_t = 0;
-        time(&now_t);
-        struct tm* gmtm;
-        gmtm = gmtime(&now_t);
-        gnow_t = mktime(gmtm);
-
-        std::cout << "now_t: " << now_t << std::endl;
-        std::cout << "gnow_t: " << gnow_t << std::endl;
+    TestSearch();
  
     
     return 0;
