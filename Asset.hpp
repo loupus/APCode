@@ -187,6 +187,7 @@ public:
 	std::string HeadLine;
 	std::string ErrMessage;
 	std::string ProxyFile;
+	std::string Language;
 	bool IsDeleted;
 
 	std::string toJsonStr()

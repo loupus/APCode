@@ -122,8 +122,13 @@ void apapi::UpdateSearchTime(AssetTime &pAssetTime)
 BackObject apapi::ParseSearch(std::string &pjson)
 {
     BackObject back;
-    std::cout << pjson << std::endl  << std::endl;
+
     nlohmann::json j = nlohmann::json::parse(pjson);
+    nlohmann::json uriJson;
+    std::string itemurl, itemtype, itemurijson, itemdate, videolink;
+    nlohmann::json jtmp;
+    cAsset tmp;
+
     if (j.is_discarded())
     {
         back.ErrDesc = "failed to parse discovery result";
@@ -145,21 +150,56 @@ BackObject apapi::ParseSearch(std::string &pjson)
     }
     for (auto &m : j["data"]["items"])
     {
-        nlohmann::json jtype = m["item"]["type"];
-        if (jtype.is_null())
+        tmp.Clear();
+        jtmp = m["item"]["type"];
+        itemtype = GetJsonValue<std::string>(jtmp);
+        if (itemtype == "text")
+            tmp.MediaType = MediaTypes::mt_text;
+        else if (itemtype == "video")
         {
-            back.ErrDesc = "jsonparse:item type not found!";
+            tmp.MediaType = MediaTypes::mt_video;
+        }
+        else
+        {
+            continue;
+        }
+
+        tmp.Id = GetJsonValue<std::string>(m["item"]["altids"]["itemid"]);
+        //tmp.Id = m["item"]["altids"]["itemid"].get<std::string>();
+        tmp.AgencySource = Agencies::a_aptn;
+        tmp.HeadLine = GetJsonValue<std::string>(m["item"]["headline"]);
+        // tmp.HeadLine = m["item"]["headline"].get<std::string>();
+        itemdate = GetJsonValue<std::string>(m["item"]["versioncreated"]);
+        if (!itemdate.empty())
+            tmp.OnDate.fromTString(itemdate.c_str());
+
+        itemurl = GetJsonValue<std::string>(m["item"]["uri"]);
+        // itemurl = m["item"]["uri"].get<std::string>();
+        itemurl.append("&apikey=");
+        itemurl.append(Config::apiKey);
+        back = ht->DoGet(itemurl);
+        if (!back.Success)
+            return back;
+        else
+            itemurijson = back.StrValue;
+
+       // std::cout << itemurijson << std::endl;
+
+        uriJson = nlohmann::json::parse(itemurijson);
+        if (uriJson.is_discarded())
+        {
+            back.ErrDesc = "failed to parse uri result";
             back.Success = false;
             return back;
         }
-        cAsset tmp;
-        tmp.Id = m["item"]["altids"]["itemid"].get<std::string>();
-        tmp.AgencySource = Agencies::a_aptn;
-        tmp.HeadLine = m["item"]["headline"].get<std::string>();
-        tmp.OnDate.fromTString(m["item"]["versioncreated"].get<std::string>().c_str());
-        if (jtype.get<std::string>() == "text")
+
+        jtmp = uriJson["data"]["item"]["language"];
+        tmp.Language = GetJsonValue<std::string>(jtmp);
+        if (!((tmp.Language == "en") || (tmp.Language == "tr"))) // ingilizce veya turkce degil
+            continue;
+
+        if (tmp.MediaType == MediaTypes::mt_text)
         {
-            tmp.MediaType = MediaTypes::mt_text;
             if (m["item"]["renditions"]["nitf"]["href"].is_null())
             {
                 back.ErrDesc = "jsonparse:nitf href not found!";
@@ -177,9 +217,53 @@ BackObject apapi::ParseSearch(std::string &pjson)
                 back = ParseTextXml(back.StrValue, &tmp);
             }
         }
-        else
+        else if (tmp.MediaType == MediaTypes::mt_video)
         {
-            std::cout << "text degil" << std::endl;
+            videolink = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["href"]);
+            if (!videolink.empty())
+            {
+                videolink.append("&apikey=");
+                videolink.append(Config::apiKey);
+                tmp.MediaFile = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["originalfilename"]);
+                if (tmp.MediaFile.empty())
+                    tmp.MediaFile = tmp.Id + ".mp4";
+                tmp.MediaFileSize = GetJsonValue<int32_t>(m["item"]["renditions"]["main_1080_25"]["sizeinbytes"]);
+                back = ht->DoGetWritefile(videolink, Config::videoDownloadFolder + tmp.MediaFile);
+                if (back.Success)
+                {
+                    tmp.State = AssetState::astat_VIDEO_DOWNLOADED;
+                    tmp.MediaPath = Config::videoDownloadFolder;
+                    tmp.LastTime = time(0);
+                }
+                else
+                {
+                    tmp.Success = AssetSuccess::asSuc_Failed;
+                    tmp.ErrMessage = back.ErrDesc;
+                }
+            }
+
+            if (m["item"]["renditions"]["nitf"]["href"].is_null())
+            {
+                back.ErrDesc = "jsonparse:nitf href not found!";
+                back.Success = false;
+                return back;
+            }
+            std::string bodyUrl = GetJsonValue<std::string>(m["item"]["renditions"]["script_nitf"]["href"]);
+            if(bodyUrl.empty())
+            {
+                back.Success = false;
+                back.ErrDesc = "failed to get nitf path";
+                return back;
+            }
+            bodyUrl.append("&apikey=");
+            bodyUrl.append(Config::apiKey);
+            back = ht->DoGet(bodyUrl);
+            if (!back.Success)
+                return back;
+            else
+            {
+                back = ParseTextXml(back.StrValue, &tmp);
+            }
         }
         back = Assets.Add(tmp);
         DumpAsset(tmp);
@@ -198,7 +282,7 @@ BackObject apapi::ParseTextXml(std::string &pXml, cAsset *pAsset)
         back.ErrDesc = "ParseTextXml: invalid argument";
         return back;
     }
-    std::cout << pXml << std::endl;
+    //std::cout << pXml << std::endl;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_string(pXml.c_str());
     if (!result)
@@ -223,7 +307,6 @@ BackObject apapi::ParseTextXml(std::string &pXml, cAsset *pAsset)
 
     ReplaceHtml(bodydata);
     pAsset->Body = bodydata;
-
     back.Success = true;
     return back;
 }
@@ -248,7 +331,7 @@ void apapi::ReplaceHtml(std::string &pstr)
 
 void apapi::DumpAsset(cAsset &pAsset)
 {
-    std::cout << "==================================================================" <<  std::endl;
+    std::cout << "==================================================================" << std::endl;
     std::cout << "Dumping Asset" << std::endl;
     std::cout << "id: " << pAsset.Id << std::endl;
     std::cout << "type: " << pAsset.MediaType << std::endl;
@@ -271,4 +354,15 @@ void apapi::IsSuccess(nlohmann::json &pJon, BackObject &pBack)
     pBack.ErrDesc.append(" message:");
     pBack.ErrDesc.append(jtmp["message"].get<std::string>());
     pBack.Success = false;
+}
+
+template <typename T>
+T apapi::GetJsonValue(nlohmann::json &pJson)
+{
+    T back;
+    if (!(pJson.is_null()))
+    {
+        back = pJson.get<T>();
+    }
+    return back;
 }

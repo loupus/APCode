@@ -17,6 +17,9 @@ private:
     void DumpAsset(cAsset &pAsset);
     void IsSuccess(nlohmann::json &pJon, BackObject &pBack);
 
+    template<typename T>
+    T GetJsonValue(nlohmann::json &pJson);
+
 public:
     apapi();
     ~apapi();

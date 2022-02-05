@@ -124,10 +124,10 @@ BackObject cHttpManager::DoGetWritefile(std::string pUrl, std::string pFile)
 	res = curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, reinterpret_cast<void*>(&pagefile));
 	res = curl_easy_setopt(curl_handle, CURLOPT_NOPROGRESS, 0);
 	res = curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, headers);
-	/*res = curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
+	res = curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
 	res = curl_easy_setopt(curl_handle, CURLOPT_ACCEPT_ENCODING, "");
 	res = curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-	res = curl_easy_setopt(curl_handle, CURLOPT_BUFFERSIZE, 2200000L);*/
+	//res = curl_easy_setopt(curl_handle, CURLOPT_BUFFERSIZE, 2200000L);
 
 
 
