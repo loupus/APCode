@@ -190,6 +190,9 @@ public:
 	std::string Language;
 	bool IsDeleted;
 
+	std::string bodyLink;
+	std::string videoLink;
+
 	std::string toJsonStr()
 	{
 		nlohmann::json j = nlohmann::json{

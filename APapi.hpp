@@ -16,9 +16,19 @@ private:
     void ReplaceHtml(std::string &pstr);
     void DumpAsset(cAsset &pAsset);
     void IsSuccess(nlohmann::json &pJon, BackObject &pBack);
+    std::string strApiKey;
+    std::string GetApiKey();
+    BackObject GetLanguage(std::string &strurl, cAsset *pAsset);
+    BackObject GetBody(cAsset *pAsset);
+    BackObject GetVideo(cAsset *pAsset);
+    int PageNumber;
+    int PageSize = 20;
 
-    template<typename T>
+    template <typename T>
     T GetJsonValue(nlohmann::json &pJson);
+
+    static void *ProcessFunc(void *parg);
+    void WorkList();
 
 public:
     apapi();
