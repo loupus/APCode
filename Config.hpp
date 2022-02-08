@@ -23,6 +23,7 @@ class Config
 	static int DownloadWaitSeconds ;
 	static int SearchInterval;    		// in seconds
 	static std::string lastSearchTime;
+	static bool PersistDb;
 
 	static std::string ConfigFile;
 	static bool ReadConfig();

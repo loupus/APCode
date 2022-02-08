@@ -1,4 +1,6 @@
+
 #include <iostream>
+#include "Globals.hpp"
 #include "APapi.hpp"
 #include "Config.hpp"
 #include "Logger.hpp"
@@ -348,6 +350,17 @@ BackObject apapi::GetBody(cAsset *pAsset)
     else
     {
         back = ParseTextXml(back.StrValue, pAsset);
+        if (back.Success)
+        {
+            pAsset->State = AssetState::astat_DOCUMENT_GET;
+            pAsset->MediaPath = Config::videoDownloadFolder;
+            pAsset->LastTime = time(0);
+        }
+        else
+        {
+            pAsset->Success = AssetSuccess::asSuc_Failed;
+            pAsset->ErrMessage = back.ErrDesc;
+        }
     }
     return back;
 }
@@ -355,19 +368,19 @@ BackObject apapi::GetBody(cAsset *pAsset)
 BackObject apapi::GetVideo(cAsset *pAsset)
 {
     BackObject back;
-        if (pAsset == nullptr)
+    if (pAsset == nullptr)
     {
         back.ErrDesc = "asset is null";
         back.Success = false;
         return back;
     }
-     if (pAsset->videoLink.empty())
+    if (pAsset->videoLink.empty())
     {
         back.ErrDesc = "video link is empty!";
         back.Success = false;
         return back;
     }
-    std::string strurl =  pAsset->videoLink + strApiKey;
+    std::string strurl = pAsset->videoLink + strApiKey;
 
     back = ht->DoGetWritefile(strurl, Config::videoDownloadFolder + pAsset->MediaFile);
     if (back.Success)
@@ -385,32 +398,45 @@ BackObject apapi::GetVideo(cAsset *pAsset)
     return back;
 }
 
+BackObject apapi::GetNonCompletedAssets(int nitems)
+{
+    BackObject back;
+    // pthread_mutex_init(&lock, NULL);   // initialize the lock
+    // pthread_mutex_lock(&lock);  // acquire lock
+    std::string today = Globals::GetNowStr();
+    back = db.GetAssets(Assets.GetPointer(), today, (int)AssetSuccess::asSuc_NoProblem, (int)Agencies::a_aptn, nitems);
+    //pthread_mutex_unlock(&lock);  // release lock
+    return back;
+}
+
 void *apapi::ProcessFunc(void *parg)
 {
     apapi *pObj = reinterpret_cast<apapi *>(parg);
     if (pObj == nullptr)
         return nullptr;
-    std::cout << "Anadolu Agency process is starting..." << std::endl;
+    std::cout << "AP Agency process is starting..." << std::endl;
     BackObject back;
     int QueueSize = 0;
     int QueueCapacity = 0;
 
     QueueCapacity = pObj->Assets.GetBuffSize();
 
-    /*
-    back = pObj->GetNonCompletedAssets(QueueCapacity);
-    if (!back.Success)
+    if (Config::PersistDb)
     {
-        Logger::WriteLog(back.ErrDesc, LogType::warning);
+        back = pObj->GetNonCompletedAssets(QueueCapacity);
+        if (!back.Success)
+        {
+            Logger::WriteLog(back.ErrDesc, LogType::warning);
+        }
+
+        QueueSize = pObj->Assets.GetSize();
+        if (QueueSize > 0) // önce yarım kalanları bitir
+        {
+            pObj->WorkList();
+            pObj->Assets.RemoveCompleted();
+        }
     }
 
-    QueueSize = pObj->Assets.GetSize();
-    if (QueueSize > 0) // önce yarım kalanları bitir
-    {
-        pObj->WorkList();
-        pObj->Assets.RemoveCompleted();
-    }
-*/
     //===============================================
 
     while (true)
@@ -467,21 +493,21 @@ void apapi::WorkList()
         {
         case AssetState::astat_NONE:
 
-            back = GetBody(pAsset );
+            back = GetBody(pAsset);
             if (!back.Success)
                 Logger::WriteLog(back.ErrDesc, LogType::error);
 
-            /*
             // update db
-            back = db.SaveAsset(pAsset);
-            if (!back.Success)
+            if (Config::PersistDb)
             {
-                pAsset->Success = AssetSuccess::asSuc_Failed; // todo bunu düşünelim
-                pAsset->ErrMessage = back.ErrDesc;
-                Logger::WriteLog(back.ErrDesc, LogType::error);
+                back = db.SaveAsset(pAsset);
+                if (!back.Success)
+                {
+                    pAsset->Success = AssetSuccess::asSuc_Failed; // todo bunu düşünelim
+                    pAsset->ErrMessage = back.ErrDesc;
+                    Logger::WriteLog(back.ErrDesc, LogType::error);
+                }
             }
-            */
-
             break;
 
         case AssetState::astat_DOCUMENT_GET:
@@ -490,16 +516,17 @@ void apapi::WorkList()
             if (!back.Success)
                 Logger::WriteLog(back.ErrDesc, LogType::error);
 
-            /*
             // update db
-            back = db.SaveAsset(pAsset);
-            if (!back.Success)
+            if (Config::PersistDb)
             {
-                pAsset->Success = AssetSuccess::asSuc_Failed;
-                pAsset->ErrMessage = back.ErrDesc;
-                Logger::WriteLog(back.ErrDesc, LogType::error);
+                back = db.SaveAsset(pAsset);
+                if (!back.Success)
+                {
+                    pAsset->Success = AssetSuccess::asSuc_Failed;
+                    pAsset->ErrMessage = back.ErrDesc;
+                    Logger::WriteLog(back.ErrDesc, LogType::error);
+                }
             }
-            */
             break;
 
         case AssetState::astat_VIDEO_DOWNLOADED:
@@ -523,5 +550,46 @@ void apapi::WorkList()
         if (StopFlag)
             break;
         pAsset = Assets.GetFirstWithSState(AssetSuccess::asSuc_NoProblem);
+    }
+}
+
+void apapi::Stop()
+{
+    int rv = 0;
+    void *res;
+    StopFlag = true;
+    //rv = pthread_cancel(thHandle);
+    //if (rv != 0)
+    //	std::cout << "	ERR ====> cancel thread failed" << std::endl;
+
+    rv = pthread_join(thHandle, &res);
+    if (rv != 0)
+    {
+        std::cout << "ERR ====> join failed. ErrCode:" << rv << std::endl;
+    }
+
+    if (res == PTHREAD_CANCELED)
+        std::cout << "thread joined" << std::endl;
+    else
+    {
+        std::cout << "ERR ====> thread join problem! RES:" << (char *)res << std::endl;
+    }
+}
+
+void apapi::Start()
+{
+
+    Logger::WriteLog("start is sent");
+    StopFlag = false;
+    int rv = 0;
+    rv = pthread_create(&thHandle, nullptr, &apapi::ProcessFunc, (void *)this);
+    if (rv != 0)
+    {
+        std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;
+    }
+    else
+    {
+        //std::cout << dye::blue("Thread: ")  << thHandle.x << std::endl;
+        //std::cout << hue::blue << "Thread: " << thHandle.x << hue::reset << std::endl;
     }
 }

@@ -29,17 +29,16 @@ std::string Config::dbName;
 std::string Config::dbUser;
 std::string Config::dbPass;
 
-std::string Config::apiKey ;
-std::string Config::apiRootUrl ;
-std::string Config::apiAccountUrl ;
-std::string Config::apiQueryUrl ;
-std::string Config::logFolder ;
-std::string Config::videoDownloadFolder ;
+std::string Config::apiKey;
+std::string Config::apiRootUrl;
+std::string Config::apiAccountUrl;
+std::string Config::apiQueryUrl;
+std::string Config::logFolder;
+std::string Config::videoDownloadFolder;
 int Config::DownloadWaitSeconds = 30;
 std::string Config::lastSearchTime;
-int Config::SearchInterval = 1200; // 60*10  10 dakika
-
-
+int Config::SearchInterval = 1200; // 60*20  20 dakika
+bool Config::PersistDb = false;
 
 std::string Config::ConfigFile = ".\\AP_AjansConfig.xml";
 
@@ -104,10 +103,10 @@ bool Config::ReadConfig()
 	node = dconfig.select_node("//Config/logFolder");
 	if (!node)
 	{
-		std::cout << "logFolder not found on config ! Default in use: empty"  << std::endl;
+		std::cout << "logFolder not found on config ! Default in use: empty" << std::endl;
 		logFolder = "";
 	}
-	else	
+	else
 		logFolder = node.node().text().as_string();
 
 	//===============================================================
@@ -153,14 +152,13 @@ bool Config::ReadConfig()
 		std::cout << "dbPass not found on config !" << std::endl;
 		return back;
 	}
-	dbPass =  node.node().text().as_string();
+	dbPass = node.node().text().as_string();
 
 	//===============================================================
 	node = dconfig.select_node("//Config/DownloadWaitSeconds");
 	if (!node)
 	{
-		std::cout << "DownloadWaitSeconds not found on config ! default in use:" << std::to_string(DownloadWaitSeconds) << std::endl;	
-			
+		std::cout << "DownloadWaitSeconds not found on config ! default in use:" << std::to_string(DownloadWaitSeconds) << std::endl;
 	}
 	else
 		DownloadWaitSeconds = node.node().text().as_int();
@@ -170,26 +168,32 @@ bool Config::ReadConfig()
 	if (!node)
 	{
 		time_t now = time(0);
-    	tm *ltm = localtime(&now);
+		tm *ltm = localtime(&now);
 		ltm->tm_hour -= 1;
 		mktime(ltm);
 		lastSearchTime = Globals::tmToStr(ltm);
-		std::cout << "lastSearchTime not found on config ! default in use: " <<  lastSearchTime << std::endl;
-		
+		std::cout << "lastSearchTime not found on config ! default in use: " << lastSearchTime << std::endl;
 	}
-	else 	
+	else
 		lastSearchTime = node.node().text().as_string();
 
-		//===============================================================
+	//===============================================================
 	node = dconfig.select_node("//Config/SearchInterval");
 	if (!node)
 	{
-		std::cout << "SearchInterval not found on config ! default in use: " <<  SearchInterval << std::endl;		
+		std::cout << "SearchInterval not found on config ! default in use: " << SearchInterval << std::endl;
 	}
-	else 	
+	else
 		SearchInterval = node.node().text().as_int();
 
-
+	//===============================================================
+	node = dconfig.select_node("//Config/PersistDb");
+	if (!node)
+	{
+		std::cout << "PersistDb not found on config ! default in use: " << PersistDb << std::endl;
+	}
+	else
+		PersistDb = node.node().text().as_bool();
 
 	back = true;
 	return back;
@@ -203,7 +207,7 @@ bool Config::WriteConfig()
 
 	pugi::xml_node tmp;
 	tmp = root.append_child("apiKey");
-	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(apiKey.c_str());			
+	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(apiKey.c_str());
 
 	tmp = root.append_child("apiRootUrl");
 	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(apiRootUrl.c_str());
@@ -244,9 +248,13 @@ bool Config::WriteConfig()
 	tmp = root.append_child("SearchInterval");
 	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(std::to_string(SearchInterval).c_str());
 
+	tmp = root.append_child("PersistDb");
+	int iPersisDb = PersistDb == true ? 1 : 0;
+	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(std::to_string(iPersisDb).c_str());
+
 	back = dconfig.save_file(ConfigFile.c_str(), PUGIXML_TEXT("  "));
 
-	if(!back)
+	if (!back)
 	{
 		std::cout << "failed to write config !" << std::endl;
 	}

@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <sstream>
 #include <regex>
@@ -66,6 +65,17 @@ std::string Globals::GetSubString(std::string &pstr, std::size_t  pbegin, std::s
     std::wstring temp = wstr.substr(pbegin, plength);
     back = to_string(temp);
     return back;
+}
+
+std::string Globals::GetNowStr() 
+{
+    time_t now;
+    time(&now);
+    std::tm *tmpFirstTime = localtime(&now);         // todo burda patlıyor
+    std::ostringstream dtss;
+    dtss << std::put_time(tmpFirstTime, "%Y-%m-%d");
+    std::string strdate = dtss.str();
+    return strdate;
 }
 
 std::string Globals::utf8_to_string(const char *utf8str, const std::locale &loc)

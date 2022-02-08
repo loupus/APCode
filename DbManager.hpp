@@ -16,7 +16,7 @@ public:
 	BackObject SaveAsset(cAsset *pAsset);
 	BackObject SaveAssets(std::list<cAsset> *pList);
 	BackObject GetAsset(cAsset *pAsset);
-	BackObject GetAssets(std::list<cAsset> *pList, std::string pDate, int isuccess, int nitems=0);
+	BackObject GetAssets(std::list<cAsset> *pList, std::string pDate, int isuccess, int SourceAgency, int nitems=0);
 	void DumpAsset(cAsset *pAsset);
 	void DumpAssets(std::list<cAsset> *pAssets);
 	BackObject PopulateSingle(RowData *rdp, cAsset* pAsset);

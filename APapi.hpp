@@ -1,14 +1,19 @@
 #pragma once
 #include <iostream>
+#include <pthread.h>
 #include "AssetQueue.hpp"
 #include "HttpManager.hpp"
+#include "DbManager.hpp"
 
 class apapi
 {
 private:
     cAssetQueue Assets;
     cHttpManager *ht;
+    pthread_t thHandle;
+    AADb db;
     volatile bool StopFlag;
+    pthread_mutex_t lock; // declare a lock
     AssetTime LastSearch;
     const std::string QueryReplaceString = "0000-00-00T00:00:00Z";
     BackObject ParseSearch(std::string &pjson);
@@ -26,8 +31,8 @@ private:
 
     template <typename T>
     T GetJsonValue(nlohmann::json &pJson);
+    BackObject GetNonCompletedAssets(int nitems);
 
-    static void *ProcessFunc(void *parg);
     void WorkList();
 
 public:
@@ -37,4 +42,8 @@ public:
     BackObject GetAccountInfo();
     BackObject Search();
     void UpdateSearchTime(AssetTime &pAssetTime);
+    static void *ProcessFunc(void *parg);
+
+    void Start();
+    void Stop();
 };

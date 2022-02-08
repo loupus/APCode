@@ -1,5 +1,5 @@
 #pragma once
-//#include <windows.h>
+#include <windows.h>
 #include <string>
 #include <codecvt>
 #include <locale>
@@ -30,6 +30,8 @@ public:
 	static std::size_t GetFirstIndexOf(std::string& pstr, std::string& psrch);
 	static std::size_t GetLastIndexOf(std::string& pstr, std::string& psrch);
 	static std::string GetSubString(std::string& pstr, std::size_t  pbegin, std::size_t  plength = std::string::npos);
+
+	static std::string GetNowStr();
 
 };
 
