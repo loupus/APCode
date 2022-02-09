@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Config.hpp"
 #include "APapi.hpp"
+#include <libpq-fe.h>
 
 void TestAccountInfo()
 {
@@ -33,13 +34,14 @@ void TestSearch()
 void TestProcess()
 {
     BackObject back;
-    apapi ap;
-    if (!ap.Initiliaze())
+    apapi *ap;
+    ap = new apapi();
+    if (!ap->Initiliaze())
     {
         std::cout << "ap api initiliaze failed!" << std::endl;
         return;
     }
-    ap.Start();
+    ap->Start();
     // if(!back.Success)
     //   std::cout << back.ErrDesc << std::endl;
 }

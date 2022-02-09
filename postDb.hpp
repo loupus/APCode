@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
+#include "libpq-fe.h"
 #include "Globals.hpp"
-#include <libpq-fe.h>
 #include "Asset.hpp"
 #include "DBClasses.hpp"
 
+// #pragma comment(lib,"libpq.lib") 
 enum PgFormats
 {
     text = 0, //ascii text
@@ -37,7 +38,6 @@ struct sParameters
     std::vector<int> paramFormats;
     std::vector<Oid> paramOids;
 };
-
 
 class postDb
 {

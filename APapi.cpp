@@ -13,6 +13,7 @@ apapi::apapi()
 {
     ht = nullptr;
     strApiKey = GetApiKey();
+  
 }
 
 apapi::~apapi()

@@ -8,7 +8,7 @@ class AADb
 {
 private:
 	postDb* pdb;
-	std::string conStr = "";
+	std::string conStr;
 public:
 
 	AADb();

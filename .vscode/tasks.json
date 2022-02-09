@@ -8,12 +8,12 @@
 			"args": [
 				"-Wall",
 				"-g",
-				"${workspaceFolder}\\*.cpp",				
-				"-I${workspaceFolder}\\include",
+				"${workspaceFolder}\\*.cpp",
 				"-IE:\\DEV\\PostGres\\postgresql-13.4-1-windows-x64-binaries\\pgsql\\include",
-				"-L${workspaceFolder}\\lib",		
-				"-LE:\\DEV\\PostGres\\postgresql-13.4-1-windows-x64-binaries\\pgsql\\lib",	
-				"-l:libcurl.lib",		
+				"-I${workspaceFolder}\\include",
+				"-LE:\\DEV\\PostGres\\postgresql-13.4-1-windows-x64-binaries\\pgsql\\lib",
+				"-L${workspaceFolder}\\lib",			
+				"-l:libcurl.lib",
 				"-l:libpq.lib",
 				"-o",
 				"${fileDirname}\\binDebug\\APCode.exe"

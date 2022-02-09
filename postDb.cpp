@@ -19,7 +19,7 @@ BackObject postDb::Connect()
 {
     BackObject back;
     if (!IsConnected())
-    {
+     {
         conn = PQconnectdb(ConnStr.c_str());
         if (PQstatus(conn) != CONNECTION_OK)
         {

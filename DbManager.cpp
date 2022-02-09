@@ -4,10 +4,10 @@
 #include "Config.hpp"
 #include "DbManager.hpp"
 
-AADb::AADb()
+AADb::AADb() : pdb(nullptr), conStr("")
 {
    // conStr = "hostaddr =10.1.101.13 port=5432 dbname=agencydb user=postgres password=fender2 connect_timeout=5 client_encoding=UTF8";
-    conStr = "hostaddr =" + Config::dbServer +  " port=" +  Config::dbPort  +" dbname=" + Config::dbName + " user=" + Config::dbUser + 
+    conStr = "hostaddr =" + Config::dbServer +  " port=" + Config::dbPort  +" dbname=" + Config::dbName + " user=" + Config::dbUser + 
     " password=" + Config::dbPass + " connect_timeout=5 client_encoding=UTF8";
     pdb = new postDb(conStr);
 }
@@ -69,7 +69,6 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     pdb->Disconnect();
     return back;
 }
-
 
 BackObject AADb::SaveAssets(std::list<cAsset> *pList)
 {

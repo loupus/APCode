@@ -1,6 +1,7 @@
 #pragma once
 
 //#pragma comment(lib, "ws2_32.lib")
+#include "winsock2.h"
 
 #include "curl\curl.h"
 #include "Globals.hpp"
