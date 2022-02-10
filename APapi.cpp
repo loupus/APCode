@@ -1,4 +1,4 @@
-
+#include "winsock2.h"
 #include <iostream>
 #include "Globals.hpp"
 #include "APapi.hpp"
@@ -7,19 +7,14 @@
 #include "pugixml.hpp"
 #include "htmlDic.hpp"
 
-//ctrl K ctrl S   shortcuts
-
-
+// ctrl K ctrl S   shortcuts
 
 apapi::apapi()
-{   
-    
-  
+{
 }
 
 apapi::~apapi()
 {
-    
 }
 
 bool apapi::Initiliaze()
@@ -27,8 +22,8 @@ bool apapi::Initiliaze()
     strApiKey = GetApiKey();
     ht.Initiliaze();
     db.Initiliaze();
-    //ht->ClearHeaders();
-    ht.AddHeader("Content-Type: application/x-www-form-urlencoded",true);
+    // ht->ClearHeaders();
+    ht.AddHeader("Content-Type: application/x-www-form-urlencoded", true);
     StopFlag = false;
     return true;
 }
@@ -184,9 +179,10 @@ BackObject apapi::ParseSearch(std::string &pjson)
         else if (tmp.MediaType == MediaTypes::mt_video)
         {
             tmp.bodyLink = GetJsonValue<std::string>(m["item"]["renditions"]["script_nitf"]["href"]);
-            tmp.videoLink = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["href"]);   
-            if(tmp.videoLink.empty()) continue;  // videosu daha çıkmamış todo ?
-             
+            tmp.videoLink = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["href"]);
+            if (tmp.videoLink.empty())
+                continue; // videosu daha çıkmamış todo ?
+
             tmp.MediaFile = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["originalfilename"]);
 
             if (tmp.MediaFile.empty())
@@ -210,7 +206,7 @@ BackObject apapi::ParseTextXml(std::string &pXml, cAsset *pAsset)
         back.ErrDesc = "ParseTextXml: invalid argument";
         return back;
     }
-    //std::cout << pXml << std::endl;
+    // std::cout << pXml << std::endl;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_string(pXml.c_str());
     if (!result)
@@ -403,7 +399,7 @@ BackObject apapi::GetNonCompletedAssets(int nitems)
     // pthread_mutex_lock(&lock);  // acquire lock
     std::string today = Globals::GetNowStr();
     back = db.GetAssets(Assets.GetPointer(), today, (int)AssetSuccess::asSuc_NoProblem, (int)Agencies::a_aptn, nitems);
-    //pthread_mutex_unlock(&lock);  // release lock
+    // pthread_mutex_unlock(&lock);  // release lock
     return back;
 }
 
@@ -474,7 +470,10 @@ void *apapi::ProcessFunc(void *parg)
 cikis:
 
     Logger::WriteLog("exiting download loop ...");
-
+    pthread_mutex_lock(&(pObj->mutex));
+    pObj->IsComplete = true;
+    pthread_mutex_unlock(&(pObj->mutex));
+    pthread_cond_signal(&(pObj->is_zero));
     return 0;
 }
 
@@ -555,48 +554,46 @@ void apapi::Stop()
 {
     int rv = 0;
     void *res;
+//timestruct_t abstime;
+    pthread_mutex_lock(&mutex);
     StopFlag = true;
-    rv = pthread_cancel(thHandle);
-    //if (rv != 0)
-    //	std::cout << "	ERR ====> cancel thread failed" << std::endl;
+    while (IsComplete == false)
+    {
+        pthread_cond_wait(&is_zero, &mutex);
+        // pthread_cond_timedwait(&cv, &mp, &abstime); 
+    }
+    pthread_mutex_unlock(&mutex);
 
     rv = pthread_join(thHandle, &res);
+    rv = pthread_mutex_destroy(&mutex);
+    rv = pthread_cond_destroy(&is_zero);
 
-    
     if (rv != 0)
     {
-        //ESRCH
-        std::cout << "ERR ====> join failed. ErrCode:" << rv << std::endl;
+        // ESRCH
+        //std::cout << "ERR ====> join failed. ErrCode:" << rv << std::endl;
     }
 
-    if (res == PTHREAD_CANCELED)
-        std::cout << "thread joined" << std::endl;
-    else
-    {
-        std::cout << "ERR ====> thread join problem! RES:" << (char *)res << std::endl;
-    }
 
-    pthread_attr_destroy(&attr);
-}
+ }
 
 void apapi::Start()
 {
 
-    Logger::WriteLog("start is sent");
-  
-    pthread_attr_init(&attr);
-     int rv = 0;
-    rv = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+    int rv = 0;
     StopFlag = false;
-   
-    rv = pthread_create(&thHandle, &attr, &apapi::ProcessFunc, (void *)this);
+    IsComplete = false;
+    rv = pthread_cond_init(&is_zero, NULL);
+    rv = pthread_mutex_init(&mutex, NULL);
+
+    rv = pthread_create(&thHandle, NULL, &apapi::ProcessFunc, (void *)this);
     if (rv != 0)
     {
         std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;
     }
     else
     {
-        //std::cout << dye::blue("Thread: ")  << thHandle.x << std::endl;
-        //std::cout << hue::blue << "Thread: " << thHandle.x << hue::reset << std::endl;
+        // std::cout << dye::blue("Thread: ")  << thHandle.x << std::endl;
+        // std::cout << hue::blue << "Thread: " << thHandle.x << hue::reset << std::endl;
     }
 }

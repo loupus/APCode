@@ -10,11 +10,16 @@ class apapi
 private:
     cAssetQueue Assets;
     cHttpManager ht;
-    pthread_t thHandle;
-    pthread_attr_t attr;
     AADb db;
-    volatile bool StopFlag;
-    pthread_mutex_t lock; // declare a lock
+
+    pthread_t thHandle;
+    pthread_cond_t is_zero;
+    pthread_mutex_t mutex;
+    bool StopFlag;
+    bool IsComplete;
+   // pthread_attr_t attr;
+
+
     AssetTime LastSearch;
     const std::string QueryReplaceString = "0000-00-00T00:00:00Z";
     BackObject ParseSearch(std::string &pjson);

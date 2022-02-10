@@ -43,6 +43,10 @@ void TestProcess()
     ap.Start();
     Sleep(1000*30);
     ap.Stop();
+    Sleep(1000*10);
+        ap.Start();
+    Sleep(1000*30);
+    ap.Stop();
     // if(!back.Success)
     //   std::cout << back.ErrDesc << std::endl;
 }
