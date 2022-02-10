@@ -7,6 +7,7 @@
 			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-Wall",
+				"-pthread",
 				"-g",
 				"${workspaceFolder}\\*.cpp",
 				"-IE:\\DEV\\PostGres\\postgresql-13.4-1-windows-x64-binaries\\pgsql\\include",

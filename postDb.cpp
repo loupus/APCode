@@ -2,9 +2,8 @@
 #include "postDb.hpp"
 #include "Logger.hpp"
 
-postDb::postDb(std::string pConnStr)
+postDb::postDb()
 {
-    ConnStr = pConnStr;
     conn = nullptr;
 }
 
@@ -18,8 +17,14 @@ postDb::~postDb()
 BackObject postDb::Connect()
 {
     BackObject back;
+    if (ConnStr.empty())
+    {
+        back.Success = false;
+        back.ErrDesc = "Connection string not set";
+        return back;
+    }
     if (!IsConnected())
-     {
+    {
         conn = PQconnectdb(ConnStr.c_str());
         if (PQstatus(conn) != CONNECTION_OK)
         {
@@ -38,7 +43,6 @@ void postDb::Disconnect()
         PQfinish(conn);
         conn = nullptr;
     }
-       
 }
 
 bool postDb::IsConnected()
@@ -73,14 +77,14 @@ BackObject postDb::DoExecuteEx(std::string pStatement)
 {
     BackObject back;
 
-    //char *strEscaped = PQescapeLiteral(conn, pStatement.c_str(), pStatement.length());
+    // char *strEscaped = PQescapeLiteral(conn, pStatement.c_str(), pStatement.length());
 
     res = PQexecParams(
         conn,
         pStatement.c_str(),
         params.paramValues.size(),
         params.paramOids.data(), // parametrelerin oid leri, nullsa pg karar verir
-        params.paramValues.data(), 
+        params.paramValues.data(),
         params.paramLengths.data(),
         params.paramFormats.data(),
         PgFormats::binary // donus verisi binary olsun
@@ -158,16 +162,16 @@ BackObject postDb::DoExecuteEx(std::string pStatement)
         return back;
     }
 
-    //PrintValues();
-     // std::vector<IDbData*> data;
+    // PrintValues();
+    //  std::vector<IDbData*> data;
     if (IsRow)
     {
         Load();
-       // DumpLoaded();
+        // DumpLoaded();
     }
-    if(IsScaler)
+    if (IsScaler)
     {
-        //todo do something
+        // todo do something
     }
 
     PQclear(res);
@@ -191,7 +195,7 @@ void postDb::AddParam(char *pValue, int pSize, int pFormat, Oid otype, bool DoRe
 
 void postDb::ClearParams()
 {
-    
+
     params.paramValues.clear();
     params.paramLengths.clear();
     params.paramFormats.clear();
@@ -235,7 +239,7 @@ void postDb::PrintValues()
             value = PQgetvalue(res, i, j);
             vlen = PQgetlength(res, i, j);
 
-            //printf("%s\n", str);
+            // printf("%s\n", str);
             std::string strfname(fname);
 
             Logger::WriteLog("FieldName: " + strfname);
@@ -257,8 +261,6 @@ void postDb::PrintValues()
                 ;
                 Logger::WriteLog("Value: " + (std::to_string(intValue)));
             }
-
-         
         }
     }
 
@@ -286,7 +288,7 @@ void postDb::LoadAsset(cAsset *pAsset)
         {
             fname = PQfname(res, j);
             value = PQgetvalue(res, i, j);
-            ftype =PQftype(res, j);
+            ftype = PQftype(res, j);
             if (strcmp(fname, "assetid") == 0)
             {
                 pAsset->Id = value;
@@ -368,18 +370,17 @@ void postDb::SwapInteger(char *pValue, Oid otype)
 
 void postDb::Load()
 {
-  
 
     ResetLoad();
 
     int nrows = 0;
-    int nfields = 0;   
+    int nfields = 0;
     nrows = PQntuples(res);
     nfields = PQnfields(res);
     char *fname, *value;
     Oid ftype;
     IFieldData *dd;
-   
+
     for (int i = 0; i < nrows; i++)
     {
         RowData *rd = new RowData();
@@ -390,55 +391,55 @@ void postDb::Load()
             fname = PQfname(res, j);
             value = PQgetvalue(res, i, j);
             ftype = PQftype(res, j);
-           
+
             switch (ftype)
             {
-                case PgTypeOids::oid_int2:
-                {
-                    dd = new FieldData<short>();
-                    dd->fieldName = fname;
-                    dd->dbType = dbRetType::Short;
-                    dd->fnumber = j;
-                    SwapInteger(value, PgTypeOids::oid_int2);
-                    short sint = *(reinterpret_cast<unsigned short *>(value));                   
-                    ((FieldData<short>*)(dd))->SetValue(sint);
-                    break;
-                }
-                case PgTypeOids::oid_int4:
-                {
-                    dd = new FieldData<int>();
-                    dd->fieldName = fname;
-                    dd->dbType = dbRetType::Int;
-                    dd->fnumber = j;
-                    SwapInteger(value, PgTypeOids::oid_int4);
-                    int sint = *(reinterpret_cast<unsigned long *>(value));                   
-                    ((FieldData<int>*)dd)->SetValue(sint);
-                    break;
-                }
-                case PgTypeOids::oid_int8:
-                {
-                    dd = new FieldData<int64_t>();
-                    dd->fieldName = fname;
-                    dd->dbType = dbRetType::Int64;
-                    dd->fnumber = j;
-                    SwapInteger(value, PgTypeOids::oid_int8);
-                    int64_t sint = *(reinterpret_cast<unsigned __int64 *>(value));                  
-                     ((FieldData<int64_t>*)dd)->SetValue(sint);
-                    break;
-                }
-                case PgTypeOids::oid_varchar:
-                case PgTypeOids::oid_text:
-                case PgTypeOids::oid_timestamp:
-                {               
-                    dd = new FieldData<std::string>();
-                    dd->fieldName = fname;
-                    dd->dbType = dbRetType::String;
-                    dd->fnumber = j;
-                    ((FieldData<std::string>*)dd)->SetValue(value);
-                    break;
-                }
+            case PgTypeOids::oid_int2:
+            {
+                dd = new FieldData<short>();
+                dd->fieldName = fname;
+                dd->dbType = dbRetType::Short;
+                dd->fnumber = j;
+                SwapInteger(value, PgTypeOids::oid_int2);
+                short sint = *(reinterpret_cast<unsigned short *>(value));
+                ((FieldData<short> *)(dd))->SetValue(sint);
+                break;
             }
-            rd->Fields.push_back(dd);        
+            case PgTypeOids::oid_int4:
+            {
+                dd = new FieldData<int>();
+                dd->fieldName = fname;
+                dd->dbType = dbRetType::Int;
+                dd->fnumber = j;
+                SwapInteger(value, PgTypeOids::oid_int4);
+                int sint = *(reinterpret_cast<unsigned long *>(value));
+                ((FieldData<int> *)dd)->SetValue(sint);
+                break;
+            }
+            case PgTypeOids::oid_int8:
+            {
+                dd = new FieldData<int64_t>();
+                dd->fieldName = fname;
+                dd->dbType = dbRetType::Int64;
+                dd->fnumber = j;
+                SwapInteger(value, PgTypeOids::oid_int8);
+                int64_t sint = *(reinterpret_cast<unsigned __int64 *>(value));
+                ((FieldData<int64_t> *)dd)->SetValue(sint);
+                break;
+            }
+            case PgTypeOids::oid_varchar:
+            case PgTypeOids::oid_text:
+            case PgTypeOids::oid_timestamp:
+            {
+                dd = new FieldData<std::string>();
+                dd->fieldName = fname;
+                dd->dbType = dbRetType::String;
+                dd->fnumber = j;
+                ((FieldData<std::string> *)dd)->SetValue(value);
+                break;
+            }
+            }
+            rd->Fields.push_back(dd);
         }
 
         vd.push_back(rd);
@@ -447,39 +448,45 @@ void postDb::Load()
 
 void postDb::DumpLoaded()
 {
-  
-    for(auto i : vd)
+
+    for (auto i : vd)
     {
-         std::cout << "RowNumber: " << i->RowNumber << std::endl;
-        for(auto j : i->Fields)
+        std::cout << "RowNumber: " << i->RowNumber << std::endl;
+        for (auto j : i->Fields)
         {
-           std::cout << j->fieldName << " : " << j->GetStrValue();
+            std::cout << j->fieldName << " : " << j->GetStrValue();
         }
-        std::cout << std::endl << std::endl;
-        //std::cout << "FieldName: " << (*i)->fieldName << " \t Type: " << (*i)->dbType  << " \t Value: " <<  ((DbData<std::string>*)(*i))->GetStrValue() << std::endl;
-         //std::cout << "FieldName: " << (*i)->fieldName << " \t Type: " << (*i)->dbType  << " \t Value: " <<  (*i)->GetStrValue() << std::endl;
+        std::cout << std::endl
+                  << std::endl;
+        // std::cout << "FieldName: " << (*i)->fieldName << " \t Type: " << (*i)->dbType  << " \t Value: " <<  ((DbData<std::string>*)(*i))->GetStrValue() << std::endl;
+        // std::cout << "FieldName: " << (*i)->fieldName << " \t Type: " << (*i)->dbType  << " \t Value: " <<  (*i)->GetStrValue() << std::endl;
     }
 }
 
 void postDb::ResetLoad()
 {
-    
-      for(auto i:vd)
-      {
-          for(auto j: i->Fields)
-          {
-              delete j;
-          }
-          i->Fields.clear();
-          i->Fields.shrink_to_fit();
-          delete i;
-      }
-        vd.clear();
-        vd.shrink_to_fit();
-    
+
+    for (auto i : vd)
+    {
+        for (auto j : i->Fields)
+        {
+            delete j;
+        }
+        i->Fields.clear();
+        i->Fields.shrink_to_fit();
+        delete i;
+    }
+    vd.clear();
+    vd.shrink_to_fit();
 }
 
-std::vector<RowData*>* postDb::GetLoaded()
+std::vector<RowData *> *postDb::GetLoaded()
 {
     return &vd;
+}
+
+void postDb::SetConStr(std::string &pConnStr)
+{
+    ConnStr = pConnStr;
+    conn = nullptr;
 }

@@ -51,7 +51,7 @@ private:
     void ResetLoad();
     
 public:
-    postDb(std::string pConnStr);
+    postDb();
     ~postDb();
     BackObject Connect();
     void Disconnect();
@@ -66,6 +66,7 @@ public:
     void Load();  
     void DumpLoaded();
     void SwapInteger(char* pValue, Oid otype);
+    void SetConStr(std::string& pConnStr);
     std::vector<RowData*>* GetLoaded();
     
 };

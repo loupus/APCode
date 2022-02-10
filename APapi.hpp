@@ -9,8 +9,9 @@ class apapi
 {
 private:
     cAssetQueue Assets;
-    cHttpManager *ht;
+    cHttpManager ht;
     pthread_t thHandle;
+    pthread_attr_t attr;
     AADb db;
     volatile bool StopFlag;
     pthread_mutex_t lock; // declare a lock

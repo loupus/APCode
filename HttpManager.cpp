@@ -6,12 +6,7 @@ std::ofstream cHttpManager::pagefile;
 
 cHttpManager::cHttpManager()
 {
-	curl_handle = nullptr;
-	res = CURLE_OK;
-	headers = nullptr;
-	res = curl_global_init(CURL_GLOBAL_ALL);
-	curl_handle = curl_easy_init();
-	InitHeaders(&headers);
+
 }
 
 cHttpManager::~cHttpManager()
@@ -330,4 +325,14 @@ int cHttpManager::my_trace(CURL* handle, curl_infotype type, char* data, size_t 
 	//std::wstring back = Globals::utf8_toWstring(strback);
 	Logger::WriteLog(strback);
 	return 0;
+}
+
+void cHttpManager::Initiliaze()
+{
+	curl_handle = nullptr;
+	res = CURLE_OK;
+	headers = nullptr;
+	res = curl_global_init(CURL_GLOBAL_ALL);
+	curl_handle = curl_easy_init();
+	InitHeaders(&headers);
 }

@@ -9,29 +9,26 @@
 
 //ctrl K ctrl S   shortcuts
 
+
+
 apapi::apapi()
-{
-    ht = nullptr;
-    strApiKey = GetApiKey();
+{   
+    
   
 }
 
 apapi::~apapi()
 {
-    if (ht)
-    {
-        delete ht;
-        ht = nullptr;
-    }
+    
 }
 
 bool apapi::Initiliaze()
 {
-    ht = new cHttpManager();
-    if (ht == nullptr)
-        return false;
+    strApiKey = GetApiKey();
+    ht.Initiliaze();
+    db.Initiliaze();
     //ht->ClearHeaders();
-    ht->AddHeader("Content-Type: application/x-www-form-urlencoded");
+    ht.AddHeader("Content-Type: application/x-www-form-urlencoded",true);
     StopFlag = false;
     return true;
 }
@@ -42,32 +39,29 @@ BackObject apapi::GetAccountInfo()
     // get account info
     std::string strurl = Config::apiRootUrl + Config::apiAccountUrl + "?apikey=" + Config::apiKey;
     std::wstring strback;
-    ht = new cHttpManager();
-    if (ht == nullptr)
-        return back;
-    ht->ClearHeaders();
-    back = ht->DoGet(strurl);
+
+    back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
 
     // get account plans
     strurl = Config::apiRootUrl + Config::apiAccountUrl + "/plans" + "?apikey=" + Config::apiKey;
-    back = ht->DoGet(strurl);
+    back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
 
     // get account quotas
     strurl = Config::apiRootUrl + Config::apiAccountUrl + "/quotas" + "?apikey=" + Config::apiKey;
-    back = ht->DoGet(strurl);
+    back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
 
     // get account downloads
     strurl = Config::apiRootUrl + Config::apiAccountUrl + "/downloads" + "?apikey=" + Config::apiKey;
-    back = ht->DoGet(strurl);
+    back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
@@ -80,10 +74,10 @@ BackObject apapi::Search()
     BackObject back;
     UpdateSearchTime(LastSearch);
     std::string strQuery = Globals::replaceStringAll(Config::apiQueryUrl, QueryReplaceString, LastSearch.asTString());
-    strQuery = ht->UrlEncode(strQuery);
+    strQuery = ht.UrlEncode(strQuery);
     strQuery = "content/search?q=" + strQuery;
     std::string strurl = Config::apiRootUrl + strQuery + "&page_size=" + std::to_string(PageSize) + "&in_my_plan=true&apikey=" + Config::apiKey;
-    back = ht->DoGet(strurl);
+    back = ht.DoGet(strurl);
     if (back.Success)
     {
         std::string rawjson = back.StrValue;
@@ -189,9 +183,12 @@ BackObject apapi::ParseSearch(std::string &pjson)
         }
         else if (tmp.MediaType == MediaTypes::mt_video)
         {
-            tmp.videoLink = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["href"]);
             tmp.bodyLink = GetJsonValue<std::string>(m["item"]["renditions"]["script_nitf"]["href"]);
+            tmp.videoLink = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["href"]);   
+            if(tmp.videoLink.empty()) continue;  // videosu daha çıkmamış todo ?
+             
             tmp.MediaFile = GetJsonValue<std::string>(m["item"]["renditions"]["main_1080_25"]["originalfilename"]);
+
             if (tmp.MediaFile.empty())
                 tmp.MediaFile = tmp.Id + ".mp4";
             tmp.MediaFileSize = GetJsonValue<int32_t>(m["item"]["renditions"]["main_1080_25"]["sizeinbytes"]);
@@ -310,7 +307,7 @@ BackObject apapi::GetLanguage(std::string &strurl, cAsset *pAsset)
     std::string responsejson;
     strurl.append(strApiKey);
 
-    back = ht->DoGet(strurl);
+    back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     else
@@ -345,7 +342,7 @@ BackObject apapi::GetBody(cAsset *pAsset)
         return back;
     }
     std::string strurl = pAsset->bodyLink + strApiKey;
-    back = ht->DoGet(strurl);
+    back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     else
@@ -383,7 +380,7 @@ BackObject apapi::GetVideo(cAsset *pAsset)
     }
     std::string strurl = pAsset->videoLink + strApiKey;
 
-    back = ht->DoGetWritefile(strurl, Config::videoDownloadFolder + pAsset->MediaFile);
+    back = ht.DoGetWritefile(strurl, Config::videoDownloadFolder + pAsset->MediaFile);
     if (back.Success)
     {
         pAsset->State = AssetState::astat_VIDEO_DOWNLOADED;
@@ -559,13 +556,16 @@ void apapi::Stop()
     int rv = 0;
     void *res;
     StopFlag = true;
-    //rv = pthread_cancel(thHandle);
+    rv = pthread_cancel(thHandle);
     //if (rv != 0)
     //	std::cout << "	ERR ====> cancel thread failed" << std::endl;
 
     rv = pthread_join(thHandle, &res);
+
+    
     if (rv != 0)
     {
+        //ESRCH
         std::cout << "ERR ====> join failed. ErrCode:" << rv << std::endl;
     }
 
@@ -575,15 +575,21 @@ void apapi::Stop()
     {
         std::cout << "ERR ====> thread join problem! RES:" << (char *)res << std::endl;
     }
+
+    pthread_attr_destroy(&attr);
 }
 
 void apapi::Start()
 {
 
     Logger::WriteLog("start is sent");
+  
+    pthread_attr_init(&attr);
+     int rv = 0;
+    rv = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
     StopFlag = false;
-    int rv = 0;
-    rv = pthread_create(&thHandle, nullptr, &apapi::ProcessFunc, (void *)this);
+   
+    rv = pthread_create(&thHandle, &attr, &apapi::ProcessFunc, (void *)this);
     if (rv != 0)
     {
         std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;

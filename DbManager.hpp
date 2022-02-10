@@ -7,12 +7,13 @@
 class AADb
 {
 private:
-	postDb* pdb;
+	postDb pdb;
 	std::string conStr;
 public:
 
 	AADb();
 	~AADb();
+	void Initiliaze();
 	BackObject SaveAsset(cAsset *pAsset);
 	BackObject SaveAssets(std::list<cAsset> *pList);
 	BackObject GetAsset(cAsset *pAsset);

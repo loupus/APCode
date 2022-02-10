@@ -34,14 +34,15 @@ void TestSearch()
 void TestProcess()
 {
     BackObject back;
-    apapi *ap;
-    ap = new apapi();
-    if (!ap->Initiliaze())
+    apapi ap;
+    if (!ap.Initiliaze())
     {
         std::cout << "ap api initiliaze failed!" << std::endl;
         return;
     }
-    ap->Start();
+    ap.Start();
+    Sleep(1000*30);
+    ap.Stop();
     // if(!back.Success)
     //   std::cout << back.ErrDesc << std::endl;
 }

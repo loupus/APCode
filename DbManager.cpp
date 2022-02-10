@@ -4,20 +4,21 @@
 #include "Config.hpp"
 #include "DbManager.hpp"
 
-AADb::AADb() : pdb(nullptr), conStr("")
+AADb::AADb()
 {
-   // conStr = "hostaddr =10.1.101.13 port=5432 dbname=agencydb user=postgres password=fender2 connect_timeout=5 client_encoding=UTF8";
-    conStr = "hostaddr =" + Config::dbServer +  " port=" + Config::dbPort  +" dbname=" + Config::dbName + " user=" + Config::dbUser + 
-    " password=" + Config::dbPass + " connect_timeout=5 client_encoding=UTF8";
-    pdb = new postDb(conStr);
+    // conStr = "hostaddr =10.1.101.13 port=5432 dbname=agencydb user=postgres password=fender2 connect_timeout=5 client_encoding=UTF8";
 }
 
 AADb::~AADb()
 {
-    if (pdb)
-        delete pdb;
 }
 
+void AADb::Initiliaze()
+{
+    conStr = "hostaddr =" + Config::dbServer + " port=" + Config::dbPort + " dbname=" + Config::dbName + " user=" + Config::dbUser +
+             " password=" + Config::dbPass + " connect_timeout=5 client_encoding=UTF8";
+    pdb.SetConStr(conStr);
+}
 
 BackObject AADb::SaveAsset(cAsset *pAsset)
 {
@@ -25,11 +26,11 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     BackObject back;
     std::string q;
     //    q.append("Insert into assets(assetid,assetsource,title,headline,body,mediatype,mediafile,mediapath,assetstate,firsttime,lasttime,ondate)");
-  //  q.append("values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)");
+    //  q.append("values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)");
 
     q.append("CALL saveasset($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)");
 
-    back = pdb->Connect();
+    back = pdb.Connect();
     if (back.Success == false)
         return back;
 
@@ -49,31 +50,31 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     std::string strLastTime = pAsset->LastTime.asString();
     std::string strOndate = pAsset->OnDate.asString();
 
-    pdb->AddParam((char *)pAsset->Id.c_str(), pAsset->Id.length(), PgFormats::binary, PgTypeOids::oid_varchar, true);
-    pdb->AddParam((char *)ipagencysource, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);   
-    pdb->AddParam((char *)pAsset->HeadLine.c_str(), pAsset->HeadLine.length(), PgFormats::binary, PgTypeOids::oid_varchar);
-    pdb->AddParam((char *)pAsset->Body.c_str(), pAsset->Body.length(), PgFormats::binary, PgTypeOids::oid_text);
-    pdb->AddParam((char *)ipmediatype, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
-    pdb->AddParam((char *)pAsset->MediaFile.c_str(), pAsset->MediaFile.length(), PgFormats::binary, PgTypeOids::oid_varchar);
-    pdb->AddParam((char *)pAsset->MediaPath.c_str(), pAsset->MediaPath.length(), PgFormats::binary, PgTypeOids::oid_varchar);
-    pdb->AddParam((char *)ipstate, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
-    pdb->AddParam((char *)ipsuccess, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
-    pdb->AddParam((char *)strFirstTime.c_str(), strFirstTime.length(), PgFormats::text, PgTypeOids::oid_timestamp);
-    pdb->AddParam((char *)strLastTime.c_str(), strLastTime.length(), PgFormats::text, PgTypeOids::oid_timestamp);
-    pdb->AddParam((char *)strOndate.c_str(), strOndate.length(), PgFormats::text, PgTypeOids::oid_timestamp);
-    pdb->AddParam((char *)pAsset->ErrMessage.c_str(), pAsset->ErrMessage.length(), PgFormats::binary, PgTypeOids::oid_text);
-    pdb->AddParam((char *)pAsset->ProxyFile.c_str(), pAsset->ProxyFile.length(), PgFormats::binary, PgTypeOids::oid_varchar);
+    pdb.AddParam((char *)pAsset->Id.c_str(), pAsset->Id.length(), PgFormats::binary, PgTypeOids::oid_varchar, true);
+    pdb.AddParam((char *)ipagencysource, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    pdb.AddParam((char *)pAsset->HeadLine.c_str(), pAsset->HeadLine.length(), PgFormats::binary, PgTypeOids::oid_varchar);
+    pdb.AddParam((char *)pAsset->Body.c_str(), pAsset->Body.length(), PgFormats::binary, PgTypeOids::oid_text);
+    pdb.AddParam((char *)ipmediatype, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    pdb.AddParam((char *)pAsset->MediaFile.c_str(), pAsset->MediaFile.length(), PgFormats::binary, PgTypeOids::oid_varchar);
+    pdb.AddParam((char *)pAsset->MediaPath.c_str(), pAsset->MediaPath.length(), PgFormats::binary, PgTypeOids::oid_varchar);
+    pdb.AddParam((char *)ipstate, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    pdb.AddParam((char *)ipsuccess, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    pdb.AddParam((char *)strFirstTime.c_str(), strFirstTime.length(), PgFormats::text, PgTypeOids::oid_timestamp);
+    pdb.AddParam((char *)strLastTime.c_str(), strLastTime.length(), PgFormats::text, PgTypeOids::oid_timestamp);
+    pdb.AddParam((char *)strOndate.c_str(), strOndate.length(), PgFormats::text, PgTypeOids::oid_timestamp);
+    pdb.AddParam((char *)pAsset->ErrMessage.c_str(), pAsset->ErrMessage.length(), PgFormats::binary, PgTypeOids::oid_text);
+    pdb.AddParam((char *)pAsset->ProxyFile.c_str(), pAsset->ProxyFile.length(), PgFormats::binary, PgTypeOids::oid_varchar);
 
-    back = pdb->DoExecuteEx(q);
+    back = pdb.DoExecuteEx(q);
 
-    pdb->Disconnect();
+    pdb.Disconnect();
     return back;
 }
 
 BackObject AADb::SaveAssets(std::list<cAsset> *pList)
 {
     BackObject back;
-    if(pList == nullptr)
+    if (pList == nullptr)
     {
         back.Success = false;
         back.ErrDesc = "null parameter";
@@ -81,11 +82,11 @@ BackObject AADb::SaveAssets(std::list<cAsset> *pList)
     }
     std::string StrJson = GetJsonList(pList);
 
-    //std::cout << "json str" << std::endl;
-    //std::cout << StrJson << std::endl;
-    //std::cout << "===========" << std::endl;
+    // std::cout << "json str" << std::endl;
+    // std::cout << StrJson << std::endl;
+    // std::cout << "===========" << std::endl;
 
-    if(StrJson.empty())
+    if (StrJson.empty())
     {
         back.Success = false;
         back.ErrDesc = "empty json array";
@@ -94,12 +95,12 @@ BackObject AADb::SaveAssets(std::list<cAsset> *pList)
 
     std::string q;
     q.append("CALL saveassets($1)");
-    back = pdb->Connect();
+    back = pdb.Connect();
     if (back.Success == false)
         return back;
-    pdb->AddParam((char *)StrJson.c_str(), StrJson.length(), PgFormats::binary, PgTypeOids::oid_json, true);
-    back = pdb->DoExecuteEx(q);  // burda cörtliyo çünkü postgre notice gönderiyor
-    pdb->Disconnect();
+    pdb.AddParam((char *)StrJson.c_str(), StrJson.length(), PgFormats::binary, PgTypeOids::oid_json, true);
+    back = pdb.DoExecuteEx(q); // burda cörtliyo çünkü postgre notice gönderiyor
+    pdb.Disconnect();
     return back;
 }
 
@@ -116,25 +117,25 @@ BackObject AADb::GetAssets(std::list<cAsset> *pList, std::string pDate, int isuc
     q.append("select assetid,assetsource,headline,body,mediatype,mediafile,mediapath,assetstate,assetsuccess,");
     q.append("firsttime::character varying,lasttime::character varying,ondate::character varying, errmessage, proxyfile from assets ");
     q.append("where ondate::date = $1 and assetsuccess = $2 and assetsource =$3");
-    if(nitems >0)
+    if (nitems > 0)
         q.append(" limit $4");
-    back = pdb->Connect();
+    back = pdb.Connect();
     if (back.Success == false)
         return back;
-    pdb->AddParam((char *)pDate.c_str(), pDate.length(), PgFormats::text, PgTypeOids::oid_timestamp, true);
-    pdb->AddParam((char *)&SourceAgency, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
-    pdb->AddParam((char *)&isuccess, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
-     if(nitems >0)
-        pdb->AddParam((char *)&nitems, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
-    back = pdb->DoExecuteEx(q);
-    pdb->Disconnect();
+    pdb.AddParam((char *)pDate.c_str(), pDate.length(), PgFormats::text, PgTypeOids::oid_timestamp, true);
+    pdb.AddParam((char *)&SourceAgency, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    pdb.AddParam((char *)&isuccess, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    if (nitems > 0)
+        pdb.AddParam((char *)&nitems, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    back = pdb.DoExecuteEx(q);
+    pdb.Disconnect();
     if (back.Success == true)
     {
-        std::vector<RowData *> *vd = pdb->GetLoaded();
+        std::vector<RowData *> *vd = pdb.GetLoaded();
         if (vd)
         {
-            back = PopulateMulti(vd,pList);
-           // DumpAssets(pList);
+            back = PopulateMulti(vd, pList);
+            // DumpAssets(pList);
         }
     }
     return back;
@@ -152,66 +153,66 @@ BackObject AADb::GetAsset(cAsset *pAsset)
     std::string q;
     q.append("select assetid,assetsource,headline,body,mediatype,mediafile,mediapath,assetstate,assetsuccess,");
     q.append("firsttime::character varying,lasttime::character varying,ondate::character varying,errmessage,proxyfile from assets where assetid = $1 limit 1");
-    back = pdb->Connect();
+    back = pdb.Connect();
     if (back.Success == false)
         return back;
-    pdb->AddParam((char *)pAsset->Id.c_str(), pAsset->Id.length(), PgFormats::binary, PgTypeOids::oid_varchar, true);
-    back = pdb->DoExecuteEx(q);
-    pdb->Disconnect();
+    pdb.AddParam((char *)pAsset->Id.c_str(), pAsset->Id.length(), PgFormats::binary, PgTypeOids::oid_varchar, true);
+    back = pdb.DoExecuteEx(q);
+    pdb.Disconnect();
 
     if (back.Success == true)
     {
-        std::vector<RowData *> *vd = pdb->GetLoaded();
+        std::vector<RowData *> *vd = pdb.GetLoaded();
         if (vd)
         {
             RowData *rd = vd->at(0);
             back = PopulateSingle(rd, pAsset);
-            //DumpAsset(pAsset);
+            // DumpAsset(pAsset);
         }
     }
 
     return back;
 }
 
-BackObject AADb::UpdateSearchTime(tm* lastSearchTime)
+BackObject AADb::UpdateSearchTime(tm *lastSearchTime)
 {
     BackObject back;
     std::string q;
     std::string strlastSearchTime = Globals::tmToStr(lastSearchTime);
     q.append("update definitions set aalastsearchtime = $1");
-    pdb->AddParam((char *)strlastSearchTime.c_str(), strlastSearchTime.length(), PgFormats::text, PgTypeOids::oid_timestamp, true);
-    back = pdb->Connect();
+    pdb.AddParam((char *)strlastSearchTime.c_str(), strlastSearchTime.length(), PgFormats::text, PgTypeOids::oid_timestamp, true);
+    back = pdb.Connect();
     if (back.Success == false)
-        return back;  
-    back = pdb->DoExecuteEx(q);
-    pdb->Disconnect();
+        return back;
+    back = pdb.DoExecuteEx(q);
+    pdb.Disconnect();
     return back;
 }
 
-BackObject AADb::GetSearchTime(tm* lastSearchTime)
+BackObject AADb::GetSearchTime(tm *lastSearchTime)
 {
-  BackObject back;
+    BackObject back;
 
     std::string q;
     q.append("select aalastsearchtime from definitions");
-    back = pdb->Connect();
+    back = pdb.Connect();
     if (back.Success == false)
         return back;
-    back = pdb->DoExecuteEx(q);
-    pdb->Disconnect();
+    back = pdb.DoExecuteEx(q);
+    pdb.Disconnect();
 
     if (back.Success == true)
     {
-        std::vector<RowData *> *vd = pdb->GetLoaded();
+        std::vector<RowData *> *vd = pdb.GetLoaded();
         if (vd)
         {
             RowData *rd = vd->at(0);
             std::string strlstime = ((FieldData<std::string> *)rd->Fields[0])->GetValue();
-            Globals::strToTm(lastSearchTime,strlstime);
+            Globals::strToTm(lastSearchTime, strlstime);
 
-            //std::istringstream ss(strlstime);
-		    //ss >> std::get_time(lastSearchTime, "%Y-%m-%d %H:%M:%S");
-          //  back = PopulateSingle(rd, pAsset);
+            // std::istringstream ss(strlstime);
+            // ss >> std::get_time(lastSearchTime, "%Y-%m-%d %H:%M:%S");
+            //  back = PopulateSingle(rd, pAsset);
         }
     }
 
@@ -223,7 +224,7 @@ void AADb::DumpAsset(cAsset *pAsset)
     std::cout << "Dumping Asset" << std::endl;
     std::cout << "-------------" << std::endl;
     std::cout << "AssetID : " << pAsset->Id << std::endl;
-    std::cout << "Asset Source : " << pAsset->AgencySource << std::endl;   
+    std::cout << "Asset Source : " << pAsset->AgencySource << std::endl;
     std::cout << "Headline : " << pAsset->HeadLine << std::endl;
     std::cout << "Body : " << pAsset->Body << std::endl;
     std::cout << "MediaType : " << pAsset->MediaType << std::endl;
@@ -289,7 +290,7 @@ BackObject AADb::PopulateSingle(RowData *rdp, cAsset *pAsset)
         }
         else if (j->fieldName == "assetstate")
         {
-            pAsset->State = ((FieldData<int> *)j)->GetValue(); 
+            pAsset->State = ((FieldData<int> *)j)->GetValue();
         }
         else if (j->fieldName == "assetsuccess")
         {
@@ -332,7 +333,7 @@ BackObject AADb::PopulateMulti(std::vector<RowData *> *pRows, std::list<cAsset> 
     cAsset pAsset;
     RowData *prd = nullptr;
     for (auto i = pRows->begin(); i != pRows->end(); i++)
-    {       
+    {
         prd = *i;
         back = PopulateSingle(prd, &pAsset);
         pAssets->push_back(pAsset);
@@ -343,10 +344,9 @@ BackObject AADb::PopulateMulti(std::vector<RowData *> *pRows, std::list<cAsset> 
 std::string AADb::GetJsonList(std::list<cAsset> *pAssets)
 {
     nlohmann::json jlist = nlohmann::json::array();
-    for(auto it = pAssets->begin(); it != pAssets->end(); it++)
+    for (auto it = pAssets->begin(); it != pAssets->end(); it++)
     {
         jlist.push_back((it)->toJson());
     }
     return jlist.dump();
 }
-
