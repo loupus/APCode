@@ -28,7 +28,7 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     //    q.append("Insert into assets(assetid,assetsource,title,headline,body,mediatype,mediafile,mediapath,assetstate,firsttime,lasttime,ondate)");
     //  q.append("values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)");
 
-    q.append("CALL saveasset($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)");
+    q.append("CALL saveasset($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)");
 
     back = pdb.Connect();
     if (back.Success == false)
@@ -64,6 +64,7 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     pdb.AddParam((char *)strOndate.c_str(), strOndate.length(), PgFormats::text, PgTypeOids::oid_timestamp);
     pdb.AddParam((char *)pAsset->ErrMessage.c_str(), pAsset->ErrMessage.length(), PgFormats::binary, PgTypeOids::oid_text);
     pdb.AddParam((char *)pAsset->ProxyFile.c_str(), pAsset->ProxyFile.length(), PgFormats::binary, PgTypeOids::oid_varchar);
+    pdb.AddParam((char *)pAsset->itemUrl.c_str(), pAsset->itemUrl.length(), PgFormats::binary, PgTypeOids::oid_varchar);
 
     back = pdb.DoExecuteEx(q);
 
@@ -115,7 +116,7 @@ BackObject AADb::GetAssets(std::list<cAsset> *pList, std::string pDate, int isuc
     }
     std::string q;
     q.append("select assetid,assetsource,headline,body,mediatype,mediafile,mediapath,assetstate,assetsuccess,");
-    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying, errmessage, proxyfile from assets ");
+    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying, errmessage, proxyfile, itemurl from assets ");
     q.append("where ondate::date = $1 and assetsuccess = $2 and assetsource =$3");
     if (nitems > 0)
         q.append(" limit $4");
@@ -152,7 +153,7 @@ BackObject AADb::GetAsset(cAsset *pAsset)
     }
     std::string q;
     q.append("select assetid,assetsource,headline,body,mediatype,mediafile,mediapath,assetstate,assetsuccess,");
-    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying,errmessage,proxyfile from assets where assetid = $1 limit 1");
+    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying,errmessage,proxyfile,itemurl from assets where assetid = $1 limit 1");
     back = pdb.Connect();
     if (back.Success == false)
         return back;
@@ -237,6 +238,7 @@ void AADb::DumpAsset(cAsset *pAsset)
     std::cout << "OnDate : " << pAsset->OnDate.asString() << std::endl;
     std::cout << "ErrMessage : " << pAsset->ErrMessage << std::endl;
     std::cout << "ProxyFile : " << pAsset->ProxyFile << std::endl;
+    std::cout << "ItemUrl : " << pAsset->itemUrl << std::endl;
 }
 
 void AADb::DumpAssets(std::list<cAsset> *pAssets)
@@ -315,6 +317,10 @@ BackObject AADb::PopulateSingle(RowData *rdp, cAsset *pAsset)
         else if (j->fieldName == "proxyfile")
         {
             pAsset->ProxyFile = ((FieldData<std::string> *)j)->GetValue();
+        }
+        else if (j->fieldName == "itemurl")
+        {
+            pAsset->itemUrl = ((FieldData<std::string> *)j)->GetValue();
         }
     }
 

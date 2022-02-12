@@ -17,28 +17,30 @@ private:
     pthread_mutex_t mutex;
     bool StopFlag;
     bool IsComplete;
-   // pthread_attr_t attr;
-
-
     AssetTime LastSearch;
+    AssetTime NextSearch;
+    std::string NextPage;
+    int PageSize = 20;
+
     const std::string QueryReplaceString = "0000-00-00T00:00:00Z";
-    BackObject ParseSearch(std::string &pjson);
+    BackObject ParseSearch(std::string &pJson);
     BackObject ParseTextXml(std::string &pXml, cAsset *pAsset);
-    void ReplaceHtml(std::string &pstr);
+  
     void DumpAsset(cAsset &pAsset);
-    void IsSuccess(nlohmann::json &pJon, BackObject &pBack);
+    void IsSuccess(nlohmann::json &pJson, BackObject &pBack);
     std::string strApiKey;
     std::string GetApiKey();
-    BackObject GetLanguage(std::string &strurl, cAsset *pAsset);
+    BackObject GetLanguage(std::string &pStrUrl, cAsset *pAsset);
     BackObject GetBody(cAsset *pAsset);
     BackObject GetVideo(cAsset *pAsset);
-    int PageNumber;
-    int PageSize = 20;
+    void PickVideoLink(nlohmann::json &pJson,cAsset *pAsset);
+  
 
     template <typename T>
     T GetJsonValue(nlohmann::json &pJson);
     BackObject GetNonCompletedAssets(int nitems);
-
+    //void UpdateSearchTime(AssetTime &pAssetTime);
+    void UpdateSearchTime();
     void WorkList();
 
 public:
@@ -47,8 +49,9 @@ public:
     bool Initiliaze();
     BackObject GetAccountInfo();
     BackObject Search();
-    void UpdateSearchTime(AssetTime &pAssetTime);
+  
     static void *ProcessFunc(void *parg);
+      void ReplaceHtml(std::string &pstr);
 
     void Start();
     void Stop();

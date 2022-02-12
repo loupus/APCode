@@ -1,7 +1,11 @@
+
+#include "winsock2.h"
+#include "windows.h"
 #include <iostream>
 #include "Config.hpp"
 #include "APapi.hpp"
 #include <libpq-fe.h>
+#include "pugixml.hpp"
 
 void TestAccountInfo()
 {
@@ -31,24 +35,48 @@ void TestSearch()
     //    std::cout << back.StrValue << std::endl;
 }
 
+apapi *ap;
 void TestProcess()
 {
     BackObject back;
+
+    ap = new apapi();
+    if (!ap->Initiliaze())
+    {
+        std::cout << "ap api initiliaze failed!" << std::endl;
+        return;
+    }
+    ap->Start();
+
+    // if(!back.Success)
+    //   std::cout << back.ErrDesc << std::endl;
+}
+
+void TestXml()
+{
     apapi ap;
     if (!ap.Initiliaze())
     {
         std::cout << "ap api initiliaze failed!" << std::endl;
         return;
     }
-    ap.Start();
-    Sleep(1000*30);
-    ap.Stop();
-    Sleep(1000*10);
-        ap.Start();
-    Sleep(1000*30);
-    ap.Stop();
-    // if(!back.Success)
-    //   std::cout << back.ErrDesc << std::endl;
+
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file("D:\\nitf.xml");
+    if (!result)
+    {
+        std::string strErrdesc(result.description());
+    }
+    pugi::xpath_node node = doc.select_node("//nitf/body/body.content/block");
+    if (!node)
+    {
+    }
+
+    std::stringstream ss;
+    node.node().print(ss);
+    std::string bodydata = ss.str(); // todo burda bazen sapıtıyor
+    ap.ReplaceHtml(bodydata);
+    std::cout << bodydata << std::endl;
 }
 
 int LocalSettingsC(std::string pLocal)
@@ -77,10 +105,14 @@ int main()
 {
     int back = 0;
     std::cout << "AP Code starting" << std::endl;
-   // back = LocalSettingsC("Turkish");
+    // back = LocalSettingsC("Turkish");
+
+    // TestXml();
+    // return 0;
 
     Config::ReadConfig();
     TestProcess();
-  system("pause");
+    std::cin.get();
+    system("pause");
     return back;
 }

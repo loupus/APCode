@@ -42,11 +42,10 @@ enum MediaTypes
 
 class AssetTime
 {
-	private:
-		time_t localtimet = 0;
-	
+private:
+	time_t localtimet = 0;
+
 public:
-	
 	static const int gmtdiff = 10800; // türkiye için 3 saat: 60*60*3
 
 	AssetTime() = default;
@@ -96,50 +95,52 @@ public:
 
 	bool fromString(const char *pStr)
 	{
-		if(pStr==nullptr) return false;
+		if (pStr == nullptr)
+			return false;
 		time_t tmptime;
 		std::tm t;
 		std::istringstream ss(pStr);
 		ss >> std::get_time(&t, "%Y-%m-%d %H:%M:%S");
 		tmptime = mktime(&t);
-		if(tmptime !=-1)
+		if (tmptime != -1)
 		{
 			localtimet = tmptime;
 			return true;
 		}
 		else
-		return false;
+			return false;
 	}
 
 	bool fromTString(const char *pStr)
-	{		
-		if(pStr==nullptr) return false;
+	{
+		if (pStr == nullptr)
+			return false;
 		time_t tmptime;
 		std::tm t;
 		std::istringstream ss(pStr);
 		ss >> std::get_time(&t, "%Y-%m-%dT%H:%M:%SZ");
-		t.tm_hour += 3;   // anadolu ajansı gmt 0 çalışıyor
+		t.tm_hour += 3; // anadolu ajansı gmt 0 çalışıyor
 		tmptime = mktime(&t);
-		if(tmptime !=-1)
+		if (tmptime != -1)
 		{
 			localtimet = tmptime;
 			return true;
 		}
 		else
-		return false;
+			return false;
 	}
 
-	time_t GetTime(bool isLocal= true)
+	time_t GetTime(bool isLocal = true)
 	{
-		if(isLocal)
+		if (isLocal)
 			return localtimet;
 		else
 			return localtimet - gmtdiff;
 	}
 
-	void SetTime(time_t pTime, bool isLocal= true)
+	void SetTime(time_t pTime, bool isLocal = true)
 	{
-		if(isLocal)
+		if (isLocal)
 			localtimet = pTime;
 		else
 			localtimet = pTime + gmtdiff;
@@ -190,6 +191,7 @@ public:
 	std::string Language;
 	bool IsDeleted;
 
+	std::string itemUrl;
 	std::string bodyLink;
 	std::string videoLink;
 
@@ -209,8 +211,8 @@ public:
 			{"lasttime", this->LastTime.asString()},
 			{"ondate", this->OnDate.asString()},
 			{"errmessage", this->ErrMessage},
-			{"proxyfile", this->ProxyFile}
-			};
+			{"proxyfile", this->ProxyFile},
+			{"itemurl", this->itemUrl}};
 
 		return j.dump();
 	}
@@ -231,8 +233,8 @@ public:
 			{"lasttime", this->LastTime.asString()},
 			{"ondate", this->OnDate.asString()},
 			{"errmessage", this->ErrMessage},
-			{"proxyfile", this->ProxyFile}
-			};
+			{"proxyfile", this->ProxyFile},
+			{"itemurl", this->itemUrl}};
 
 		return j;
 	}
@@ -247,26 +249,36 @@ public:
 	}
 	void Clear()
 	{
+		// hepsini temizle
 		Id.clear();
 		HeadLine.clear();
 		GroupId.clear();
 		ErrMessage.clear();
-		AgencySource = 0;
-		MediaType = 0;
-		State = 0;
-		Success = 0;
+		MediaFile.clear();
+		MediaPath.clear();
+		ProxyFile.clear();
+		Language.clear();
+		State = AssetState::astat_NONE;
+		FirstTime = time(0);
+		LastTime = time(0);
+		OnDate = time(0);
+		AgencySource = static_cast<int>(Agencies::a_none);
+		MediaType = static_cast<int>(MediaTypes::mt_none);
+		State = static_cast<int>(AssetState::astat_NONE);
+		Success = static_cast<int>(AssetSuccess::asSuc_NoProblem);
+		IsDeleted = false;
 	}
 	std::string GetProxyName()
 	{
 		std::string back = "";
 		std::string dotchar(".");
-		std::size_t LastPointPos = Globals::GetLastIndexOf( MediaFile, dotchar);
+		std::size_t LastPointPos = Globals::GetLastIndexOf(MediaFile, dotchar);
 		std::size_t strlen = Globals::GetCharLen(MediaFile);
-		if(MediaFile.empty() || LastPointPos == std::string::npos || strlen < 5)
+		if (MediaFile.empty() || LastPointPos == std::string::npos || strlen < 5)
 			return back;
 
 		std::string ext = Globals::GetSubString(MediaFile, LastPointPos);
-		back = Globals::GetSubString(MediaFile,0,strlen -(strlen - LastPointPos));
+		back = Globals::GetSubString(MediaFile, 0, strlen - (strlen - LastPointPos));
 		back.append("_Proxy");
 		back.append(ext);
 		return back;

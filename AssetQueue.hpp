@@ -15,17 +15,17 @@ private:
 public:
 	cAssetQueue();
 	~cAssetQueue();
-	
-	BackObject Add(const cAsset& value);
-	void Remove(cAsset& value);
+
+	BackObject Add(const cAsset &value);
+	void Remove(cAsset &value);
 	void RemoveWithSuccess(int pState);
 	void RemoveCompleted();
 	int GetSize();
-	std::list<cAsset>* GetPointer();
+	std::list<cAsset> *GetPointer();
 	cAsset Front();
-	cAsset* GetFirstWithStat(int pState);
-	cAsset* GetFirstWithSState(int pSsuccess);
+	cAsset *GetFirstWithStat(int pState);
+	cAsset *GetFirstWithSState(int pSsuccess);
 	int GetBuffSize();
-	cAsset* GetWithID(std::string pAssetID);
+	cAsset *GetWithID(std::string pAssetID);
 
 };

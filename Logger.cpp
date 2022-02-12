@@ -89,12 +89,10 @@ void Logger::WriteLog(std::string pLog, LogType pLogType)
 
     wl << " : " << logtype.c_str() << " : " << pLog.c_str();
 
-    asd.clear();
-    asd = wl.str();
 
-    std::codecvt_utf8<wchar_t> *ct = new std::codecvt_utf8<wchar_t>();
-    std::locale loc(std::locale(), ct);
-    lw.imbue(loc);
+    //std::codecvt_utf8<wchar_t> *ct = new std::codecvt_utf8<wchar_t>();
+    //std::locale loc(std::locale(), ct);
+    //lw.imbue(loc);
 
     try
     {
@@ -106,9 +104,7 @@ void Logger::WriteLog(std::string pLog, LogType pLogType)
     }
 
     try
-    {
-        asd.clear();
-        asd = wl.str();
+    {   
         lw << wl.str() << std::endl;
         std::cout << wl.str() << std::endl;
     }
@@ -116,8 +112,10 @@ void Logger::WriteLog(std::string pLog, LogType pLogType)
     {
         std::wcout << L"cannot output string" << std::endl;
     }
+    FlushLog();
     lw.close();
     wl.clear();
+    std::cout.flush();
 }
 
 void Logger::FlushLog()

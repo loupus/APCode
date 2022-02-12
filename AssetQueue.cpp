@@ -62,8 +62,8 @@ void cAssetQueue::RemoveCompleted()
 {
 	std::unique_lock<std::mutex> lock(mtx);
 	q.remove_if([=](cAsset a){return a.IsDeleted == true;});
-	q.remove_if([=](cAsset a){return a.Success ==  AssetSuccess::asSuc_Completed && a.MediaType == MediaTypes::mt_text;});
-	q.remove_if([=](cAsset a){return a.Success ==  AssetSuccess::asSuc_Completed && a.MediaType == MediaTypes::mt_video && a.State == AssetState::astat_PROXY_CREATED;});
+	q.remove_if([=](cAsset a){return a.Success ==  AssetSuccess::asSuc_Completed; });
+//	q.remove_if([=](cAsset a){return a.Success ==  AssetSuccess::asSuc_Completed && a.MediaType == MediaTypes::mt_video && a.State == AssetState::astat_PROXY_CREATED;});
 	lock.unlock();
 }
 
@@ -122,5 +122,8 @@ cAsset* cAssetQueue::GetWithID(std::string pAssetID)
 	else
 		return nullptr;
 }
+
+
+
 
 
