@@ -1,0 +1,79 @@
+<NewsML Version="1.2" xmlns="http://iptc.org/std/NewsML/2003-10-10/">
+	<NewsEnvelope>
+		<TransmissionId>urn:publicid:ap.org:111668</TransmissionId>
+		<SentFrom>
+			<Party FormalName="The Associated Press" />
+		</SentFrom>
+		<DateAndTime>20220213T235133</DateAndTime>
+		<NewsService FormalName="ent_daily" />
+	</NewsEnvelope>
+	<NewsItem>
+		<Identification>
+			<NewsIdentifier>
+				<ProviderId>www.ap.org</ProviderId>
+				<DateId>20220213</DateId>
+				<NewsItemId>8bb6620b-be2c-4765-ad8f-dfc6040f0adf.1</NewsItemId>
+				<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+				<PublicIdentifier>urn:newsml:www.ap.org:20220213:8bb6620b-be2c-4765-ad8f-dfc6040f0adf.1:1</PublicIdentifier>
+			</NewsIdentifier>
+			<Label>
+				<LabelType FormalName="StoryNumber" />
+				<LabelText>4365901</LabelText>
+			</Label>
+		</Identification>
+		<NewsManagement>
+			<NewsItemType FormalName="Video" />
+			<FirstCreated>20220213T235133</FirstCreated>
+			<ThisRevisionCreated>20220213T235133</ThisRevisionCreated>
+			<Status FormalName="Usable" />
+		</NewsManagement>
+		<NewsComponent Essential="yes" EquivalentsList="yes">
+			<Role FormalName="Main" />
+			<BasisForChoice>MimeType/@FormalName</BasisForChoice>
+			<NewsLines>
+				<HeadLine>Country singer Mickey Guyton performs national anthem at Super Bowl</HeadLine>
+				<DateLine>13 February 2022 - Inglewood, Calif. </DateLine>
+				<SlugLine>US Super Bowl Anthem</SlugLine>
+			</NewsLines>
+			<AdministrativeMetadata />
+			<NewsComponent>
+				<Role FormalName="Script" />
+				<ContentItem>
+					<MimeType FormalName="application/xhtml+xml" />
+					<DataContent>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<div>
+								<p></p>
+								<p>SHOTLIST:</p>
+								<p>RESTRICTION SUMMARY:</p>
+								<p>- CLIPS MAY ONLY BE USED FOR 48 HOURS. NO ARCHIVE. NO RESALE.</p>
+								<p>- MANDATORY ONSCREEN COURTESY "NFL/NBC"</p>
+								<p>- NO ONLINE USE</p>
+								<p>- COMMERCIAL MUSIC, MUSIC VIDEO AND OR PERFORMANCES, MUST BE CLEARED ACCORDING TO YOUR OWN LOCAL MUSIC PERFORMANCE AND COPYRIGHT AGREEMENTS WITH YOUR APPLICABLE COLLECTING SOCIETY.  </p>
+								<p>NFL/NBC - MANDATORY COURTESY</p>
+								<p>Inglewood, Calif. - 13 February 2022</p>
+								<p>1. Mickey Guyton performs national anthem</p>
+								<p>STORYLINE: </p>
+								<p>MICKEY GUYTON SINGS NATIONAL ANTHEM AT THE SUPER BOWL</p>
+								<p>Country singer Mickey Guyton performed the American national anthem on Sunday (13FEB2022) at SoFi Stadium before the match up between the Cincinnati Bengals and the Los Angeles Rams.</p>
+								<p>      </p>
+								<p>Guyton, who told The Associated Press this week that she'd earned the nickname "Quickie Mickey" for singing ``The Star Spangled Banner'' in a tight 1:30, sang it in about 1:50 on Sunday before the teams took the field. </p>
+								<p>Oddsmakers had put the over/under on the anthem length at 1:35. </p>
+								<p>``I don't want to ruin anybody's sports bets, but let's just say it's the Super Bowl, so it most likely won't be as fast,'' the Grammy-nominated country singer told the AP.</p>
+								<p>      </p>
+								<p>She was still faster than the Super Bowl average of around two minutes. </p>
+								<p>Super Bowl LVI's halftime show will feature hip-hop superstars Dr. Dre, Kendrick Lamar, Eminem, Snoop Dogg and Mary J. Blige.</p>
+								<p>Deaf rappers Wawa and Sean Forbes will be providing an American Sign Language interpretation.  </p>
+								<p>===========================================================</p>
+								<p>Clients are reminded: </p>
+								<p>(i) to check the terms of their licence agreements for use of content outside news programming and that further advice and assistance can be obtained from the AP Archive on: Tel +44 (0) 20 7482 7482 Email: info@aparchive.com</p>
+								<p>(ii) they should check with the applicable collecting society in their Territory regarding the clearance of any sound recording or performance included within the AP Television News service </p>
+								<p>(iii) they have editorial responsibility for the use of all and any content included within the AP Television News service and for libel, privacy, compliance and third party rights applicable to their Territory.</p>
+							</div>
+						</html>
+					</DataContent>
+				</ContentItem>
+			</NewsComponent>
+		</NewsComponent>
+	</NewsItem>
+</NewsML>

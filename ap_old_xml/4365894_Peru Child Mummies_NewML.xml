@@ -1,0 +1,102 @@
+<NewsML Version="1.2" xmlns="http://iptc.org/std/NewsML/2003-10-10/">
+	<NewsEnvelope>
+		<TransmissionId>urn:publicid:ap.org:111668</TransmissionId>
+		<SentFrom>
+			<Party FormalName="The Associated Press" />
+		</SentFrom>
+		<DateAndTime>20220213T211236</DateAndTime>
+		<NewsService FormalName="news" />
+	</NewsEnvelope>
+	<NewsItem>
+		<Identification>
+			<NewsIdentifier>
+				<ProviderId>www.ap.org</ProviderId>
+				<DateId>20220213</DateId>
+				<NewsItemId>b5cfdec7-67f2-4ff4-bb9e-d3bc13f0520c.1</NewsItemId>
+				<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+				<PublicIdentifier>urn:newsml:www.ap.org:20220213:b5cfdec7-67f2-4ff4-bb9e-d3bc13f0520c.1:1</PublicIdentifier>
+			</NewsIdentifier>
+			<Label>
+				<LabelType FormalName="StoryNumber" />
+				<LabelText>4365894</LabelText>
+			</Label>
+		</Identification>
+		<NewsManagement>
+			<NewsItemType FormalName="Video" />
+			<FirstCreated>20220213T211236</FirstCreated>
+			<ThisRevisionCreated>20220213T211236</ThisRevisionCreated>
+			<Status FormalName="Usable" />
+		</NewsManagement>
+		<NewsComponent Essential="yes" EquivalentsList="yes">
+			<Role FormalName="Main" />
+			<BasisForChoice>MimeType/@FormalName</BasisForChoice>
+			<NewsLines>
+				<HeadLine>Bales of 6 child mummies found in Peru</HeadLine>
+				<DateLine>13 February 2022/ 7 December 2021 - Cajamarquilla, Lima</DateLine>
+				<SlugLine>Peru Child Mummies</SlugLine>
+			</NewsLines>
+			<AdministrativeMetadata />
+			<NewsComponent>
+				<Role FormalName="Script" />
+				<ContentItem>
+					<MimeType FormalName="application/xhtml+xml" />
+					<DataContent>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<div>
+								<p></p>
+								<p>SHOTLIST:  </p>
+								<p>RESTRICTION SUMMARY:</p>
+								<p>ASSOCIATED PRESS</p>
+								<p>Cajamarquilla - 13 February 2022  </p>
+								<p>1. Wide of archeologists working on excavation site where they recently discovered 13 funeral bales, among them 6 child mummies</p>
+								<p>2. Archeologist inside area excavating with brushes and other tools </p>
+								<p>3. Various of archeologist cleaning remains covered in textile and rope discovered </p>
+								<p>4. Various of child mummies discovered next to clay pots </p>
+								<p>5. Various of archeologist cleaning discovered mummy </p>
+								<p>6. Close of child mummy in middle of site </p>
+								<p>7. Archeologist working in site where child mummies were discovered </p>
+								<p>8. Archeologist Pieter Van Dalen, responsible for the investigation in the Cajamarquilla archeological complex, showing site to students </p>
+								<p>9. SOUNDBITE (Spanish) Pieter Van Dalen, responsible for the research project in the Cajamarquilla Archeological Complex:</p>
+								<p>"Well, we've found in relation to the tomb of the mummy of Cajamarquilla we discovered on November 2021, another 13 bodies (funeral bundles) of people of which 6 are of children, and it appears that all of these people were sacrificed to accompany the mummy, the soul of the mummy on the path of the death to the final destination, according to the ideology of the andean populations."</p>
+								<p>10. Archeologist Yomira Huaman supervising excavations of new discoveries </p>
+								<p>11. SOUNDBITE (Spanish) Yomira Huaman, Archeologist of the Investigation Project in the Cajamarquilla Archeological Complex:</p>
+								<p>"What's happening here, why are there so many funeral bales of children (mummies) are being found? With the further specialized investigations, such as those done with DNA, strontium, nitrogen, and all that, I think can help us understand. That way, we can say what really took place in Cajamarquilla, and if it's associated with the tomb of the mummy (found in November 2021), yes it's associated. They're almost at the same level. It's found outside its area. It doesn't have the same preparation of the mummy (found in 2021), it's tomb, room, bathroom, it's belongings. They are further down, and they are simple burials but with a lot of information."</p>
+								<p>12. Archeologist photographic funeral bale of child mummy found in excavation area </p>
+								<p>13. Pottery found inside excavation site </p>
+								<p>14. Various of archeologist cleaning funeral bales found </p>
+								<p>15. Funeral bale of child mummy found inside site </p>
+								<p>16. Archeologist working </p>
+								<p>17. Various of Cajamarquilla Archeological Complex</p>
+								<p>ASSOCIATED PRESS:</p>
+								<p>ARCHIVE: Lima - 7 December 2021</p>
+								<p>18. Members of media surrounding the "Mummy of Cajamarquilla" which is seen inside a glass enclosed case</p>
+								<p>19. Various of the mummy with its hands over its face</p>
+								<p>20. Ropes tied around mummy's body</p>
+								<p>21. Various of infant funeral bales that were recently excavated from the site alongside some textiles and pieces of pottery unearthed with the remains</p>
+								<p>STORYLINE:</p>
+								<p>Archeologists working in Peru's second largest pre-Inca city reported on Sunday the findings of 6 bales of child mummies apparently sacrificed to accompany to the "world of the dead" an important discovery made in 2021.</p>
+								<p>The discovery was made in Cajamarquilla, a pre-Inca epicenter of more than 1,400 years located 16 kilometers northeast of Lima's main square.</p>
+								<p>Skeletal remains of what make up seven adults were found next to the child mummies that were covered in cotton textiles.</p>
+								<p>Archeologist Yomira Huaman, one of the leaders of the research project, said these findings were associated with another mummy, a man from the high-class who was found with its hands covering his face, and was discovered in 2021.</p>
+								<p>That man died approximately between 800 and 1,000 after Christ. </p>
+								<p>The mummy discovered in 2021 was covered in cotton fabrics, had its hands and body tied with a rope made of vegetables. </p>
+								<p>Pieter Van Dalen, who is co-leading the Cajamarquilla project, said servants, children, wives or other relatives sacrificed to accompany the "world of the dead," the mummy discovered in 2021, were found.</p>
+								<p>Huaman, Van Dalen, and more than a dozen archeologists who are excavating the area, are part of the faculty of archeology of the National University of San Marcos. </p>
+								<p>The children's bodies were wrapped with cotton textiles. </p>
+								<p>The textiles were also tied with ropes, as was the mummy discovered in 2021, Van Dalen said.</p>
+								<p>Clay pots, Peruvian rodents known as cuys (Guinea pig), fish remains, sacrificed camelids, purple corn, peppers, and sewing sticks were also found in the burial sites.  </p>
+								<p>Cajamarquilla was a key commercial center where people of various ethnicities lived. </p>
+								<p>It was in an area that connected areas of the Andes with the populated centers on the Pacific coast. </p>
+								<p>===========================================================</p>
+								<p>Clients are reminded: </p>
+								<p>(i) to check the terms of their licence agreements for use of content outside news programming and that further advice and assistance can be obtained from the AP Archive on: Tel +44 (0) 20 7482 7482 Email: info@aparchive.com</p>
+								<p>(ii) they should check with the applicable collecting society in their Territory regarding the clearance of any sound recording or performance included within the AP Television News service </p>
+								<p>(iii) they have editorial responsibility for the use of all and any content included within the AP Television News service and for libel, privacy, compliance and third party rights applicable to their Territory.</p>
+							</div>
+						</html>
+					</DataContent>
+				</ContentItem>
+			</NewsComponent>
+		</NewsComponent>
+	</NewsItem>
+</NewsML>

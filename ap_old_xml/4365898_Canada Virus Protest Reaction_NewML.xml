@@ -1,0 +1,96 @@
+<NewsML Version="1.2" xmlns="http://iptc.org/std/NewsML/2003-10-10/">
+	<NewsEnvelope>
+		<TransmissionId>urn:publicid:ap.org:111668</TransmissionId>
+		<SentFrom>
+			<Party FormalName="The Associated Press" />
+		</SentFrom>
+		<DateAndTime>20220213T225600</DateAndTime>
+		<NewsService FormalName="news" />
+	</NewsEnvelope>
+	<NewsItem>
+		<Identification>
+			<NewsIdentifier>
+				<ProviderId>www.ap.org</ProviderId>
+				<DateId>20220213</DateId>
+				<NewsItemId>2531cf2e-f93f-4160-9fa5-abf3ef06c1b0.1</NewsItemId>
+				<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+				<PublicIdentifier>urn:newsml:www.ap.org:20220213:2531cf2e-f93f-4160-9fa5-abf3ef06c1b0.1:1</PublicIdentifier>
+			</NewsIdentifier>
+			<Label>
+				<LabelType FormalName="StoryNumber" />
+				<LabelText>4365898</LabelText>
+			</Label>
+		</Identification>
+		<NewsManagement>
+			<NewsItemType FormalName="Video" />
+			<FirstCreated>20220213T225600</FirstCreated>
+			<ThisRevisionCreated>20220213T225600</ThisRevisionCreated>
+			<Status FormalName="Usable" />
+		</NewsManagement>
+		<NewsComponent Essential="yes" EquivalentsList="yes">
+			<Role FormalName="Main" />
+			<BasisForChoice>MimeType/@FormalName</BasisForChoice>
+			<NewsLines>
+				<HeadLine>Many Ottawa residents infuriated with protesters </HeadLine>
+				<DateLine>13 February 2022 - Ottawa</DateLine>
+				<SlugLine>Canada Virus Protest Reaction</SlugLine>
+			</NewsLines>
+			<AdministrativeMetadata />
+			<NewsComponent>
+				<Role FormalName="Script" />
+				<ContentItem>
+					<MimeType FormalName="application/xhtml+xml" />
+					<DataContent>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<div>
+								<p></p>
+								<p>SHOTLIST:</p>
+								<p>RESTRICTION SUMMARY:</p>
+								<p>ASSOCIATED PRESS </p>
+								<p>Ottawa - 13 February 2022 </p>
+								<p>1. Ottawa resident Colleen Sinclair with sign reading (English) 'Freedom From Convoy Bullies' </p>
+								<p>2. SOUNDBITE (English) Colleen Sinclair, Ottawa Resident:</p>
+								<p>"My reaction is that people want to have their voices heard. We've heard them. The way they're going about it now is completely unacceptable. They're occupying our city. People are scared to go to work. They're scared to leave their homes."</p>
+								<p>3. Protesters hang laundry out to dry </p>
+								<p>4. Portable toilets in front of parliament building </p>
+								<p>5. SOUNDBITE (English) Colleen Sinclair, Ottawa Resident:</p>
+								<p>"There's various levels of government with responsibility for moving this convoy. I think the time of asking people politely to leave has probably come to an end. Sadly, I think the only way to get them to go is going to be force. It's very unfortunate, and I think the people with children should think about it and they should take them out of this zone because this is not going to end well. And it's a shame that it's come to this, but I think it's time for hard action by our governments."</p>
+								<p>6. Various of protesters rapping in front of parliament </p>
+								<p>7. SOUNDBITE (English) Colleen Sinclair, Ottawa Resident:</p>
+								<p>"While I live in the downtown core, it hasn't had a great impact on me. Besides the, you know, inconvenience of having to walk through the yahoos that come here who think that they're protesting for some kind of weird definition of freedom, but it's causing stress for the kids. It's causing stress for, frankly, our pets. Think of the dogs, people. OK, you're stressing them out with the honking. It's people who out of work and people can't go jobs. It's stressful. I feel angry at what's happening. This isn't Canada. This does not represent us, and we just want them to go home."</p>
+								<p>8. Various of free food stand </p>
+								<p>9. SOUNDBITE (English) Howard Joyce, Ottawa Resident </p>
+								<p>"You're not free to go anywhere you want in your city. I mean, there's an illegal occupation happening. The rule of law doesn't exist a few blocks away. So I mean, it's I guess it's intimidating. It's upsetting. It's angering. You feel like, you know, you just you have no agency and you can't do anything."</p>
+								<p>10. Protesters gathered around fire </p>
+								<p>11. SOUNDBITE (English) Howard Joyce, Ottawa Resident </p>
+								<p>"Like, you should be able to be able to voice your opinion and people do that all the time at Parliament Hill, like every day, probably you can find a different protest at Parliament Hill. But that's not what's happening right now. And when you mobilize the city, the federal government, the provincial government, the city, they all need to work together to figure out how to find a solution and deal with this problem."</p>
+								<p>12. Shannon Thomas with her dog </p>
+								<p>13. SOUNDBITE (English) Shannon Thomas, Ottawa Resident </p>
+								<p>"It's horrible, it's horrible. It's just I feel like I'm living in a different country like I'm in the States. It just makes me really sad to see all these people waving Canadian flags, acting like patriots when really it's kind of the most sad and embarrassing thing I've ever seen. So, yeah, that's all I'll say. They need to go home right away."</p>
+								<p>14. Trucks blocking road </p>
+								<p>15. SOUNDBITE (English) Shannon Thomas, Ottawa Resident </p>
+								<p>"Well, there's children here, and unfortunately, parents are using their children, so I don't know. It's a really tough situation for the police because, you know, violence should not happen. So and, I I, the police are in a really tough situation."</p>
+								<p>16. People getting warm at grill </p>
+								<p>17. SOUNDBITE (English) Shannon Thomas, Ottawa Resident </p>
+								<p>"Ignore them, ignore them completely. They don't deserve to have a seat at the table. They'll go home eventually. They're not accomplishing anything. So ignore them. That's it."</p>
+								<p>15. Various of downtown Ottawa </p>
+								<p>16. Various of people yelling at protesters in passing cars to go home </p>
+								<p>STORYLINE:</p>
+								<p>Many people who live and work in downtown Ottawa are infuriated by truck drivers and other protesters who have taken over the area around Parliament Hill to demonstrate against COVID-19 restrictions. </p>
+								<p>Colleen Sinclair, a counter-protester, said the demonstrators have had enough time for their discontent to be heard and need to move on -- with police force, if it comes down to it.</p>
+								<p>The city has seen similar expansions of the protest on past weekends, and loud music played as people milled about downtown where anti-vaccine demonstrators have been encamped since late January, to the frustration of local residents.</p>
+								<p>"It just feels like I'm living in a different country, like I'm in the States," said Shannon Thomas, a 32-year-old teacher. "It just makes me really sad to see all these people waving Canadian flags and acting like patriots when it's really the most sad and embarrassing thing I've ever seen."</p>
+								<p>Hundreds of miles away from Ottawa, in Windsor, Canada, police cleared and arrested protesters near the busiest U.S.-Canadian border crossing on Sunday, even as they held back from a crackdown on the larger protest in the capital, Ottawa. </p>
+								<p>===========================================================</p>
+								<p>Clients are reminded: </p>
+								<p>(i) to check the terms of their licence agreements for use of content outside news programming and that further advice and assistance can be obtained from the AP Archive on: Tel +44 (0) 20 7482 7482 Email: info@aparchive.com</p>
+								<p>(ii) they should check with the applicable collecting society in their Territory regarding the clearance of any sound recording or performance included within the AP Television News service </p>
+								<p>(iii) they have editorial responsibility for the use of all and any content included within the AP Television News service and for libel, privacy, compliance and third party rights applicable to their Territory.</p>
+							</div>
+						</html>
+					</DataContent>
+				</ContentItem>
+			</NewsComponent>
+		</NewsComponent>
+	</NewsItem>
+</NewsML>

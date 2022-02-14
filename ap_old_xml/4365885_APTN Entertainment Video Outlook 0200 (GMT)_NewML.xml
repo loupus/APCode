@@ -1,0 +1,88 @@
+<NewsML Version="1.2" xmlns="http://iptc.org/std/NewsML/2003-10-10/">
+	<NewsEnvelope>
+		<TransmissionId>urn:publicid:ap.org:111668</TransmissionId>
+		<SentFrom>
+			<Party FormalName="The Associated Press" />
+		</SentFrom>
+		<DateAndTime>20220214T021256</DateAndTime>
+		<NewsService FormalName="ent_daily" />
+	</NewsEnvelope>
+	<NewsItem>
+		<Identification>
+			<NewsIdentifier>
+				<ProviderId>www.ap.org</ProviderId>
+				<DateId>20220214</DateId>
+				<NewsItemId>92dc235f-faab-45ec-a699-e596e73d236e.1</NewsItemId>
+				<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+				<PublicIdentifier>urn:newsml:www.ap.org:20220214:92dc235f-faab-45ec-a699-e596e73d236e.1:1</PublicIdentifier>
+			</NewsIdentifier>
+			<Label>
+				<LabelType FormalName="StoryNumber" />
+				<LabelText>4365885</LabelText>
+			</Label>
+		</Identification>
+		<NewsManagement>
+			<NewsItemType FormalName="Video" />
+			<FirstCreated>20220214T021256</FirstCreated>
+			<ThisRevisionCreated>20220214T021256</ThisRevisionCreated>
+			<Status FormalName="Usable" />
+		</NewsManagement>
+		<NewsComponent Essential="yes" EquivalentsList="yes">
+			<Role FormalName="Main" />
+			<BasisForChoice>MimeType/@FormalName</BasisForChoice>
+			<NewsLines>
+				<HeadLine>Entertainment Video Outlook 0200 (GMT)</HeadLine>
+				<DateLine>13 February 2022 - </DateLine>
+				<SlugLine>APTN Entertainment Video Outlook 0200 (GMT)</SlugLine>
+			</NewsLines>
+			<AdministrativeMetadata />
+			<NewsComponent>
+				<Role FormalName="Script" />
+				<ContentItem>
+					<MimeType FormalName="application/xhtml+xml" />
+					<DataContent>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<div>
+								<p></p>
+								<p>CLIENTS PLEASE NOTE: </p>
+								<p>Here are the stories APTN Entertainment aims to cover over the next 24 hours.  All times in GMT.</p>
+								<p>MONDAY 14 FEBRUARY </p>
+								<p>0400</p>
+								<p>NEW YORK_ Sergio Hudson presents at NYFW</p>
+								<p>1300</p>
+								<p>LOS ANGELES_ Dave Grohl explains the Foo Fighters' venture into horror films with 'Studio 666'</p>
+								<p>VARIOUS_ The stars of 'The Marvelous Mrs. Maisel' talk about Midge getting tough with her comedy in season 4 of the Prime Video series</p>
+								<p>1445</p>
+								<p>BERLIN_ Writer/director Michael Koch presents his movie 'A Piece of Sky' in Berlin, which explores "young love in the alps" and the focus on patience and trust in relationships</p>
+								<p>1700 </p>
+								<p>NEW YORK_ Ad Age editor Jeanine Poggi talks about the buzziest Super Bowl ads after the big game</p>
+								<p>1800 </p>
+								<p>NEW YORK_ Carolina Herrera presents at NYFW</p>
+								<p>BERLIN_ Berlinale premiere for 'One Year One Night,' which looks at the aftermath of a couple who were present at the Bataclan attack and whether their lives will ever return to normal </p>
+								<p>2100</p>
+								<p>LOS ANGELES_ New series 'Bel Air' puts a dramatic spin on the 'Fresh Prince' story</p>
+								<p>BERLIN_ 'The Outfit' premieres at the Berlin International Film Festival, starring Mark Rylance as an English tailor in the 1960s who becomes embroiled with a family of vicious gangsters</p>
+								<p>2145</p>
+								<p>BERLIN_ Directed by Denis Cote, 'That Kind of Summer' premieres in Berlin and centers on three women invited to a facility to explore their sexual issues</p>
+								<p>CELEBRITY EXTRA</p>
+								<p>AUSTRALIA_ Oscar and BAFTA nominee Kodi-Smit McPhee looks back on his career to date, revealing what he's learned from co-stars Benedict Cumberbatch, Eric Bana and Viggo Mortensen</p>
+								<p>LOS ANGELES_ First female ensemble member among new 'Jackass' additions</p>
+								<p>BROADCAST VIDEO ALREADY AVAILABLE:</p>
+								<p>US_'Death on the Nile' tops a quiet box office weekend</p>
+								<p>NEW YORK_Designer Brandon Maxwell pays emotional tribute to his grandmother at runway show</p>
+								<p>INGLEWOOD_Country singer Mickey Guyton performs national anthem at Super Bowl</p>
+								<p>INGLEWOOD_Dr. Dre, Snoop Dogg, Eminem, Mary J. Blige, Kendrick Lamar and surprise performance by 50 Cent  at Super Bowl LVI's halftime show</p>
+								<p>VENICE_Boats lit up in Venice for first weekend of carnival</p>
+								<p>BERLIN_ Machine Gun Kelly appears at world premiere of new drama 'Taurus' at Berlin International Film Festival</p>
+								<p>VALENCIA, SPAIN_ 'The Good Boss' starring Javier Bardem is big winner at Spain's Goya Awards</p>
+								<p>BEIJING_ Hardy few extol rewards of icy dip in Beijing lake</p>
+								<p>SANTIAGO, CHILE_ A picnic to celebrate equal marriage law in Chile</p>
+								<p>BERLIN_ Machine Gun Kelly experienced 'screen therapy' in 'cathartic' new movie 'Taurus'</p>
+							</div>
+						</html>
+					</DataContent>
+				</ContentItem>
+			</NewsComponent>
+		</NewsComponent>
+	</NewsItem>
+</NewsML>

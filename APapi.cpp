@@ -134,6 +134,51 @@ void apapi::UpdateSearchTime()
     // std::cout << "LastSearch: " << LastSearch.asString() << std::endl;
 }
 
+BackObject apapi::GenerateNewsML(cAsset *pAsset)
+{
+    BackObject back;
+
+
+    bool rv = false;
+    pugi::xml_document doc;
+    pugi::xml_parse_result result = doc.load_file("NewsML_Template.xml");
+
+	if (!result)
+	{
+		std::cout << "Loading template newsml file failed !" << std::endl;
+		std::cout << result.description() << std::endl;
+		return back;
+	}
+
+
+    pugi::xpath_node xnode = doc.select_node("//NewsML/NewsEnvelope/DateAndTime");
+    if (!xnode)
+    {
+        back.ErrDesc = "failed to get datetime of template newsml";
+        back.Success = false;
+        return back;
+    }
+
+    xnode = doc.select_node("//NewsML/NewsItem/Identification/NewsIdentifier/DateId");
+    if (!xnode)
+    {
+        back.ErrDesc = "failed to get datetime of template newsml";
+        back.Success = false;
+        return back;
+    }
+
+
+    rv = xnode.node().set_value(pAsset->OnDate.asTString().c_str());
+
+
+
+
+
+    doc.save_file("newsmltest.xml", PUGIXML_TEXT("  "));
+
+    return back;
+}
+
 BackObject apapi::ParseSearch(std::string &pjson)
 {
     BackObject back;
@@ -261,7 +306,9 @@ BackObject apapi::ParseTextXml(std::string &pXml, cAsset *pAsset)
     pAsset->Body = bodydata;
     if (pAsset->Body.empty())
     {
-        Logger::WriteLog("Body Empty of: " + pAsset->Id);
+        back.Success = false;
+        back.ErrDesc = "Body is empty";
+        return back;
     }
     back.Success = true;
     return back;
@@ -367,12 +414,10 @@ BackObject apapi::GetBody(cAsset *pAsset)
     }
     if (pAsset->bodyLink.empty()) // ise itemurlden git
     {
-        Logger::WriteLog("body link almaya calisacak");
         strurl = pAsset->itemUrl + strApiKey;
         back = ht.DoGet(strurl);
         if (!back.Success)
         {
-            pAsset->Success = AssetSuccess::asSuc_Failed;
             back.ErrDesc = "failed to get bodylink by querying itemurl: " + strurl;
             back.Success = false;
             return back;
@@ -386,18 +431,15 @@ BackObject apapi::GetBody(cAsset *pAsset)
         }
 
         if (pAsset->MediaType == MediaTypes::mt_text)
-            pAsset->bodyLink = GetJsonValue<std::string>(j["item"]["renditions"]["nitf"]["href"]);
+            pAsset->bodyLink = GetJsonValue<std::string>(j["data"]["item"]["renditions"]["nitf"]["href"]);
         else if (pAsset->MediaType == MediaTypes::mt_video)
-            pAsset->bodyLink = GetJsonValue<std::string>(j["item"]["renditions"]["script_nitf"]["href"]);
+            pAsset->bodyLink = GetJsonValue<std::string>(j["data"]["item"]["renditions"]["script_nitf"]["href"]);
 
         if (pAsset->bodyLink.empty())
         {
-            Logger::WriteLog("body link alamadı");
-            return back; // doğru ve yanlış değil, tehir edilecek
-        }
-        else
-        {
-            Logger::WriteLog("body link: " + pAsset->bodyLink);
+            back.ErrDesc = "failed to get body link";
+            back.Success = false;
+            return back;
         }
     }
     strurl = pAsset->bodyLink + strApiKey;
@@ -407,20 +449,6 @@ BackObject apapi::GetBody(cAsset *pAsset)
     else
     {
         back = ParseTextXml(back.StrValue, pAsset);
-        if (back.Success)
-        {
-            pAsset->State = AssetState::astat_DOCUMENT_GET;
-            if (pAsset->MediaType == MediaTypes::mt_text)
-            {
-                pAsset->Success = AssetSuccess::asSuc_Completed;
-            }
-            pAsset->LastTime = time(0);
-        }
-        else
-        {
-            pAsset->Success = AssetSuccess::asSuc_Failed;
-            pAsset->ErrMessage = back.ErrDesc;
-        }
     }
     return back;
 }
@@ -442,7 +470,6 @@ BackObject apapi::GetVideo(cAsset *pAsset)
         back = ht.DoGet(strurl);
         if (!back.Success)
         {
-            pAsset->Success = AssetSuccess::asSuc_Failed;
             back.ErrDesc = "failed to get videolink by querying itemurl: " + strurl;
             back.Success = false;
             return back;
@@ -456,31 +483,17 @@ BackObject apapi::GetVideo(cAsset *pAsset)
         }
         PickVideoLink(j["data"]["item"]["renditions"], pAsset);
 
-        if (pAsset->videoLink.empty())
+        if (pAsset->videoLink.empty()) // videolink yoksa sil
         {
-            int nezamandir = difftime(pAsset->LastTime.GetTime(), pAsset->FirstTime.GetTime());
-
-            Logger::WriteLog("video link henuz yok, itemurl: " + pAsset->itemUrl + "    " + std::to_string(nezamandir / 60) + " dakika");
-            return back; // doğru ve yanlış değil, tehir edilecek
+            back.ErrDesc = "failed to get videolink";
+            back.Success = false;
+            return back;
         }
-        else
-            Logger::WriteLog("video link " + pAsset->videoLink);
     }
+
     strurl = pAsset->videoLink + strApiKey;
 
     back = ht.DoGetWritefile(strurl, Config::videoDownloadFolder + pAsset->MediaFile);
-    if (back.Success)
-    {
-        pAsset->State = AssetState::astat_VIDEO_DOWNLOADED;
-        pAsset->Success = AssetSuccess::asSuc_Completed;
-        pAsset->MediaPath = Config::videoDownloadFolder;
-        pAsset->LastTime = time(0);
-    }
-    else
-    {
-        pAsset->Success = AssetSuccess::asSuc_Failed;
-        pAsset->ErrMessage = back.ErrDesc;
-    }
 
     return back;
 }
@@ -504,8 +517,6 @@ void apapi::PickVideoLink(nlohmann::json &pJson, cAsset *pAsset)
             pAsset->MediaFile = pAsset->Id + ".mp4";
         pAsset->MediaFileSize = GetJsonValue<int32_t>(pJson["main_1080_25"]["sizeinbytes"]);
     }
-    if (pAsset->videoLink.empty()) // videolink yoksa sil
-        pAsset->IsDeleted = true;
 }
 
 BackObject apapi::GetNonCompletedAssets(int nitems)
@@ -552,7 +563,7 @@ void *apapi::ProcessFunc(void *parg)
     while (true)
     {
         Logger::WriteLog("=============================================================================================================");
-       // Logger::WriteLog("Looping");
+        // Logger::WriteLog("Looping");
         if (pObj->StopFlag)
             goto cikis;
 
@@ -616,7 +627,14 @@ void apapi::WorkList()
 
             back = GetBody(pAsset);
             if (!back.Success)
+            {
                 Logger::WriteLog(back.ErrDesc, LogType::error);
+                pAsset->Success = AssetSuccess::asSuc_Failed;
+            }
+            else
+            {
+                pAsset->State = AssetState::astat_DOCUMENT_GET;
+            }
 
             // update db
             if (Config::PersistDb)
@@ -635,7 +653,10 @@ void apapi::WorkList()
 
             back = GetVideo(pAsset);
             if (!back.Success)
+            {
                 Logger::WriteLog(back.ErrDesc, LogType::error);
+                pAsset->Success = AssetSuccess::asSuc_Failed;
+            }
 
             // update db
             if (Config::PersistDb)
@@ -646,6 +667,12 @@ void apapi::WorkList()
                     pAsset->Success = AssetSuccess::asSuc_Failed;
                     pAsset->ErrMessage = back.ErrDesc;
                     Logger::WriteLog(back.ErrDesc, LogType::error);
+                }
+                else
+                {
+                    pAsset->State = AssetState::astat_VIDEO_DOWNLOADED;
+                    pAsset->MediaPath = Config::videoDownloadFolder;
+                    pAsset->LastTime = time(0);
                 }
             }
             break;
@@ -662,7 +689,7 @@ void apapi::WorkList()
             pAsset->Success = AssetSuccess::asSuc_Completed;
 
         // todo burda mı callbackde mi?
-        if (pAsset->MediaType == MediaTypes::mt_video && pAsset->State == AssetState::astat_PROXY_CREATED)
+        if (pAsset->MediaType == MediaTypes::mt_video && pAsset->State == AssetState::astat_VIDEO_DOWNLOADED)
             pAsset->Success = AssetSuccess::asSuc_Completed;
 
         if (StopFlag)

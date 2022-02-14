@@ -101,17 +101,25 @@ int LocalSettingsC(std::string pLocal)
     return 0;
 }
 
+void TextNewsML()
+{
+    ap = new apapi();
+    ap->GenerateNewsMl();
+}
+
 int main()
 {
     int back = 0;
     std::cout << "AP Code starting" << std::endl;
-    // back = LocalSettingsC("Turkish");
+    back = LocalSettingsC("Turkish");
 
     // TestXml();
     // return 0;
 
     Config::ReadConfig();
-    TestProcess();
+    //   TestProcess();
+
+    TextNewsML();
     std::cin.get();
     system("pause");
     return back;

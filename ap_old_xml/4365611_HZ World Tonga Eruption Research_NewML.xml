@@ -1,0 +1,121 @@
+<NewsML Version="1.2" xmlns="http://iptc.org/std/NewsML/2003-10-10/">
+	<NewsEnvelope>
+		<TransmissionId>urn:publicid:ap.org:111668</TransmissionId>
+		<SentFrom>
+			<Party FormalName="The Associated Press" />
+		</SentFrom>
+		<DateAndTime>20220214T021349</DateAndTime>
+		<NewsService FormalName="horizons" />
+	</NewsEnvelope>
+	<NewsItem>
+		<Identification>
+			<NewsIdentifier>
+				<ProviderId>www.ap.org</ProviderId>
+				<DateId>20220214</DateId>
+				<NewsItemId>e4f47e9b-335b-404a-9788-2787a4e9896b.1</NewsItemId>
+				<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+				<PublicIdentifier>urn:newsml:www.ap.org:20220214:e4f47e9b-335b-404a-9788-2787a4e9896b.1:1</PublicIdentifier>
+			</NewsIdentifier>
+			<Label>
+				<LabelType FormalName="StoryNumber" />
+				<LabelText>4365611</LabelText>
+			</Label>
+		</Identification>
+		<NewsManagement>
+			<NewsItemType FormalName="Video" />
+			<FirstCreated>20220214T021349</FirstCreated>
+			<ThisRevisionCreated>20220214T021349</ThisRevisionCreated>
+			<Status FormalName="Usable" />
+		</NewsManagement>
+		<NewsComponent Essential="yes" EquivalentsList="yes">
+			<Role FormalName="Main" />
+			<BasisForChoice>MimeType/@FormalName</BasisForChoice>
+			<NewsLines>
+				<HeadLine>One month on,  ionosphere monitoring could lead to early tsunami warning system</HeadLine>
+				<DateLine>Various, please see shotlist - Pasadena, California, Various Tonga, please see shotlist</DateLine>
+				<SlugLine>HZ World Tonga Eruption Research</SlugLine>
+			</NewsLines>
+			<AdministrativeMetadata />
+			<NewsComponent>
+				<Role FormalName="Script" />
+				<ContentItem>
+					<MimeType FormalName="application/xhtml+xml" />
+					<DataContent>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<div>
+								<p></p>
+								<p>WORLD TONGA  ERUPTION RESEARCH</p>
+								<p>SHOTLIST:</p>
+								<p>SOURCE: ASSOCIATED PRESS/NATIONAL INSTITUTE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY (NICT)/BROADCOM BROADCASTING - MARIAN KUPU/VALIDATED UGC/NEW ZEALAND DEFENSE FORCE</p>
+								<p>RESTRICTION SUMMARY: - MUST ON-SCREEN CREDIT NICT/MUST CREDIT BROADCOM BROADCASTING - MARIAN KUPU/MUST CREDIT SAVANNAH PETERSON/MUS CREDIT NEW ZEALAND DEFENSE FORCE</p>
+								<p>LENGTH: 03:00</p>
+								<p>NATIONAL INSTITUTE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY (NICT) - MUST ON-SCREEN CREDIT NICT</p>
+								<p>Pacific Ocean/Tonga (seen from space) - 15 January 2022</p>
+								<p>1. STILLS of ocean seen from satellite as the Hunga Tonga Hunga Ha'apai undersea volcano erupts</p>
+								<p>ASSOCIATED PRESS</p>
+								<p>Pasadena, California - 8 February 2022</p>
+								<p>2. SOUNDBITE (English) Siddharth Krishnamoorthy, researcher, NASA Jet Propulsion Laboratory: ++VIDEO CALL++</p>
+								<p>"On January 15, of course, we were continuing to monitor the ionosphere as we usually do, when reports started filtering in of this major volcanic eruption that happened in Tonga, and we started to pull the data and started to see if it created a signature in the ionosphere. And sure enough, we found lots of different kinds of signals that this eruption produced."</p>
+								<p>NATIONAL INSTITUTE OF INFORMATION AND COMMUNICATIONS TECHNOLOGY (NICT) - MUST ON-SCREEN CREDIT NICT</p>
+								<p>Pacific Ocean/Tonga (seen from space) - 15 January 2022</p>
+								<p>3. Looped timelapse video showing sequence of satellite STILLS from Japanese satellite Himawari-8 showing undersea volcanic eruption in Pacific Ocean near Tonga ++LOOPED FOUR TIMES++</p>
+								<p>ASSOCIATED PRESS</p>
+								<p>Pasadena, California - 8 February 2022</p>
+								<p>4. SOUNDBITE (English) Siddharth Krishnamoorthy, researcher, NASA Jet Propulsion Laboratory: ++VIDEO CALL++</p>
+								<p>"It's caused widespread damage. It's believed to be the biggest eruption, at least in the last 25 to 30 years."</p>
+								<p>BROADCOM BROADCASTING - MARIAN KUPU - MUST CREDIT</p>
+								<p>Nuku'alofa – 17 January 2022</p>
+								<p>5. Pan right of palace building damaged by eruption</p>
+								<p>6. Tracking of streets covered in ash, damage to homes, debris in yard</p>
+								<p>ASSOCIATED PRESS</p>
+								<p>Pasadena, California - 8 February 2022</p>
+								<p>7. SOUNDBITE (English) Siddharth Krishnamoorthy, researcher, NASA Jet Propulsion Laboratory: ++VIDEO CALL++</p>
+								<p>"It was clearly very violent, and it left the atmosphere ringing. It caused a tsunami. The shockwave itself caused a tsunami, so all kinds of different things happened as a result of the eruption."</p>
+								<p>KOLI FOLAU/BROADCOM BROADCASTING - MARIAN KUPU - MUST CREDIT</p>
+								<p>Atata Island – 16 January 2022</p>
+								<p>8. Wide of church building still standing among complete devastation, debris, ash-covered landscape</p>
+								<p>9. Various of broken trees debris, ash-covered boat on land</p>
+								<p>ASSOCIATED PRESS</p>
+								<p>Pasadena, California - 8 February 2022</p>
+								<p>10. SOUNDBITE (English) Siddharth Krishnamoorthy, researcher, NASA Jet Propulsion Laboratory: ++VIDEO CALL++</p>
+								<p>"So JPL developing a system where the signal is recorded and analysed in real time and one of the main applications of that is actually for a tsunami warning. And the point of that is that not just volcanic eruptions, but earthquakes and tsunamis that also result from volcanic eruptions or otherwise - they also produce a signal in the ionosphere. And if you're able to record them and analyse them in near real time, you get several more hours of warning."</p>
+								<p>VALIDATED UGC - MUST CREDIT SAVANNAH PETERSON</p>
+								<p>++USER GENERATED CONTENT: This video has been authenticated by AP based on the following validation checks:</p>
+								<p>++Video and audio content checked by regional experts against known locations and events</p>
+								<p>++Video is consistent with independent AP reporting</p>
+								<p>++Video cleared for use by all AP clients by Savannah Peterson</p>
+								<p>++Mandatory on-screen credit Savannah Peterson</p>
+								<p>Pacifia, California - 15 January 2022</p>
+								<p>11. Pan of seafront as massive waves arrive</p>
+								<p>ASSOCIATED PRESS</p>
+								<p>Pasadena, California - 8 February 2022</p>
+								<p>12. SOUNDBITE (English) Siddharth Krishnamoorthy, researcher, NASA Jet Propulsion Laboratory: ++VIDEO CALL++</p>
+								<p>"If we can detect a tsunami in the open ocean in real time, that gives you several more hours to evacuate coastlines, if you know there is a tsunami approaching."</p>
+								<p>NEW ZEALAND DEFENSE FORCE - MUST CREDIT</p>
+								<p>Air above Tonga - 16 January 2022</p>
+								<p>15. STILLS of  area of Tonga covered with ashes taken from plane</p>
+								<p>LEADIN:</p>
+								<p>The under sea eruption of a volcano near Tonga last month disturbed an outer layer of the Earth's atmosphere according to NASA.</p>
+								<p>But thanks to this finding, scientists hope to develop a much faster warning system for eruptions which could save lives.</p>
+								<p>STORYLINE:</p>
+								<p>When Tonga's Hunga Tonga-Hunga Ha'apai volcano erupted last month, it destroyed buildings, covered the island nation in ash and sent tsunami waves thousands of miles away.</p>
+								<p>The 15 January eruption also produced acoustic shockwaves that disturbed the ionosphere, the outer layer of the Earth's atmosphere that contains electrons ionised by the sun, according to NASA's Jet Propulsion Laboratory based in Pasadena, California.</p>
+								<p>The disturbance was detected by the lab's Global Differential Global Positioning System (GDGPS), that monitors the density of electrons in the ionosphere.</p>
+								<p>"We started to pull the data and started to see if it created a signature in the ionosphere. And sure enough, we found lots of different kinds of signals that this eruption produced," says Siddharth Krishnamoorthy, research technologist at NASA.</p>
+								<p>Data from the volcanic eruption will help NASA in its efforts to develop an early-warning system for tsunamis by tracking changes in the ionosphere, Krishnamoorthy says.</p>
+								<p>Most countries currently monitor for tsunamis by using buoys to track wave activity off their coasts, but these systems don't give communities much warning before a tsunami strikes.</p>
+								<p>A tsunami warning system based on ionosphere disturbances could give communities much earlier notice to help protect lives and property, but it will take many more years and much more data to make it reliable, according to Krishnamoorthy.</p>
+								<p>"If we can detect a tsunami in the open ocean in real time, that gives you several more hours to evacuate coasts, coastlines," he says.</p>
+								<p>====</p>
+								<p>Clients are reminded: </p>
+								<p>(i) to check the terms of their licence agreements for use of content outside news programming and that further advice and assistance can be obtained from the AP Archive on: Tel +44 (0) 20 7482 7482 Email: info@aparchive.com. </p>
+								<p>(ii) they should check with the applicable collecting society in their Territory regarding the clearance of any sound recording or performance included within the AP Television News service </p>
+								<p>(iii) they have editorial responsibility for the use of all and any content included within the AP Television News service and for libel, privacy, compliance and third party rights applicable to their Territory.</p>
+							</div>
+						</html>
+					</DataContent>
+				</ContentItem>
+			</NewsComponent>
+		</NewsComponent>
+	</NewsItem>
+</NewsML>

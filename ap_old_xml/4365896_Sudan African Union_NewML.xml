@@ -1,0 +1,79 @@
+<NewsML Version="1.2" xmlns="http://iptc.org/std/NewsML/2003-10-10/">
+	<NewsEnvelope>
+		<TransmissionId>urn:publicid:ap.org:111668</TransmissionId>
+		<SentFrom>
+			<Party FormalName="The Associated Press" />
+		</SentFrom>
+		<DateAndTime>20220213T220721</DateAndTime>
+		<NewsService FormalName="news" />
+	</NewsEnvelope>
+	<NewsItem>
+		<Identification>
+			<NewsIdentifier>
+				<ProviderId>www.ap.org</ProviderId>
+				<DateId>20220213</DateId>
+				<NewsItemId>a3153795-48dc-4c63-ad91-7749913c6020.1</NewsItemId>
+				<RevisionId PreviousRevision="0" Update="N">1</RevisionId>
+				<PublicIdentifier>urn:newsml:www.ap.org:20220213:a3153795-48dc-4c63-ad91-7749913c6020.1:1</PublicIdentifier>
+			</NewsIdentifier>
+			<Label>
+				<LabelType FormalName="StoryNumber" />
+				<LabelText>4365896</LabelText>
+			</Label>
+		</Identification>
+		<NewsManagement>
+			<NewsItemType FormalName="Video" />
+			<FirstCreated>20220213T220721</FirstCreated>
+			<ThisRevisionCreated>20220213T220721</ThisRevisionCreated>
+			<Status FormalName="Usable" />
+		</NewsManagement>
+		<NewsComponent Essential="yes" EquivalentsList="yes">
+			<Role FormalName="Main" />
+			<BasisForChoice>MimeType/@FormalName</BasisForChoice>
+			<NewsLines>
+				<HeadLine>Sudanese Sovereign Council head meets AU chair</HeadLine>
+				<DateLine>13 February 2022 - Khartoum</DateLine>
+				<SlugLine>Sudan African Union</SlugLine>
+			</NewsLines>
+			<AdministrativeMetadata />
+			<NewsComponent>
+				<Role FormalName="Script" />
+				<ContentItem>
+					<MimeType FormalName="application/xhtml+xml" />
+					<DataContent>
+						<html xmlns="http://www.w3.org/1999/xhtml">
+							<div>
+								<p></p>
+								<p>SHOTLIST: </p>
+								<p>RESTRICTION SUMMARY:</p>
+								<p>++QUALITY AS INCOMING++</p>
+								<p>ASSOCIATED PRESS </p>
+								<p>Khartoum - 13 February 2022 </p>
+								<p>1. Various of head of Sudanese Sovereign Council, General Abdel-Fattah Burhan greeting Chairperson of the African Union Commission, Moussa Faki Mahamat and other African Union delegation officials </p>
+								<p>2. Wide of Burhan and African union delegation </p>
+								<p>3. Mid of Burhan and Faki seated </p>
+								<p>4. Wide of Burhan and African union delegation </p>
+								<p>5. Close of Burhan </p>
+								<p>6. Various of Burhan with African Union delegation and Sudanese officials </p>
+								<p>7. Various of International Relations Expert, Dr. Al Rasheed Ibrahim at his desk  </p>
+								<p>8. SOUNDBITE (Arabic) Dr. Al Rasheed Ibrahim, International Relations Expert:</p>
+								<p>"I believe that there are understandings reached at these levels of the African Union, and it's also not possible to bypass America and the visit of the American envoy to the Horn of Africa in this regard. Of course, any agreement or initiative will support the stability strategy in Africa and this will support the dialogue that was started by Mr. Volker  (Perthes, Special Representative for the United Nations Secretary-General) and was supported by the Sovereign Council. But the political parties (in Sudan) with its raised levels on this question by saying no negotiations, no partnership will put them in confrontation with the international society, and even also with the African mediator."</p>
+								<p>9. Various of traffic in Khartoum, people walking </p>
+								<p>STORYLINE:</p>
+								<p>Head of the Sudanese Sovereign Council, Gen. Abdel-Fattah Burhan met with Chairperson of the African Union Commission, Moussa Faki in Khartoum on Sunday to discuss the political issues in Sudan.</p>
+								<p>Sudanese International Relation's Expert, Dr. Al Rasheed Ibrahim said "any agreement or initiative" will support the stability strategy in Africa.</p>
+								<p>"This will support the dialogue that was started by Mr. Volker (Perthes, Special Representative for the United Nations Secretary-General) and was supported by the Sovereign Council," he added. </p>
+								<p>Faki will meet also with the opposition parties to listen to discuss their views during his two day visit to the country. </p>
+								<p>===========================================================</p>
+								<p>Clients are reminded: </p>
+								<p>(i) to check the terms of their licence agreements for use of content outside news programming and that further advice and assistance can be obtained from the AP Archive on: Tel +44 (0) 20 7482 7482 Email: info@aparchive.com</p>
+								<p>(ii) they should check with the applicable collecting society in their Territory regarding the clearance of any sound recording or performance included within the AP Television News service </p>
+								<p>(iii) they have editorial responsibility for the use of all and any content included within the AP Television News service and for libel, privacy, compliance and third party rights applicable to their Territory.</p>
+							</div>
+						</html>
+					</DataContent>
+				</ContentItem>
+			</NewsComponent>
+		</NewsComponent>
+	</NewsItem>
+</NewsML>

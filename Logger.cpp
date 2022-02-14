@@ -90,9 +90,9 @@ void Logger::WriteLog(std::string pLog, LogType pLogType)
     wl << " : " << logtype.c_str() << " : " << pLog.c_str();
 
 
-    //std::codecvt_utf8<wchar_t> *ct = new std::codecvt_utf8<wchar_t>();
-    //std::locale loc(std::locale(), ct);
-    //lw.imbue(loc);
+    std::codecvt_utf8<wchar_t> *ct = new std::codecvt_utf8<wchar_t>();
+    std::locale loc(std::locale(), ct);
+    lw.imbue(loc);
 
     try
     {
