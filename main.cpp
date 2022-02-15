@@ -103,8 +103,8 @@ int LocalSettingsC(std::string pLocal)
 
 void TextNewsML()
 {
-    ap = new apapi();
-    ap->GenerateNewsMl();
+  //  ap = new apapi();
+  //  ap->GenerateNewsML();
 }
 
 int main()
@@ -117,9 +117,9 @@ int main()
     // return 0;
 
     Config::ReadConfig();
-    //   TestProcess();
+       TestProcess();
 
-    TextNewsML();
+   // TextNewsML();
     std::cin.get();
     system("pause");
     return back;

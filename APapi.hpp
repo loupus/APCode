@@ -39,7 +39,7 @@ private:
   T GetJsonValue(nlohmann::json &pJson);
   BackObject GetNonCompletedAssets(int nitems);
   // void UpdateSearchTime(AssetTime &pAssetTime);
-
+  BackObject GenerateEgsXml(cAsset *pAsset);
   void UpdateSearchTime();
   void WorkList();
 

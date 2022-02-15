@@ -21,9 +21,10 @@ class Config
 
 	static int HoursBefore ;
 	static int DownloadWaitSeconds ;
-	static int SearchInterval;    		// in seconds
+//	static int SearchInterval;    		// in seconds
 	static std::string lastSearchTime;
 	static bool PersistDb;
+	static std::string EgsFolder;
 
 	static std::string ConfigFile;
 	static bool ReadConfig();

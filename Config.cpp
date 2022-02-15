@@ -1,4 +1,4 @@
-
+#include <filesystem>
 #include "pugixml.hpp"
 #include "Globals.hpp"
 #include "Config.hpp"
@@ -35,9 +35,9 @@ std::string Config::apiAccountUrl;
 std::string Config::apiQueryUrl;
 std::string Config::logFolder;
 std::string Config::videoDownloadFolder;
+std::string Config::EgsFolder;
 int Config::DownloadWaitSeconds = 30;
 std::string Config::lastSearchTime;
-int Config::SearchInterval = 1200; // 60*20  20 dakika
 bool Config::PersistDb = false;
 
 std::string Config::ConfigFile = ".\\AP_AjansConfig.xml";
@@ -178,13 +178,13 @@ bool Config::ReadConfig()
 		lastSearchTime = node.node().text().as_string();
 
 	//===============================================================
-	node = dconfig.select_node("//Config/SearchInterval");
-	if (!node)
-	{
-		std::cout << "SearchInterval not found on config ! default in use: " << SearchInterval << std::endl;
-	}
-	else
-		SearchInterval = node.node().text().as_int();
+	//	node = dconfig.select_node("//Config/SearchInterval");
+	// if (!node)
+	//{
+	//		std::cout << "SearchInterval not found on config ! default in use: " << SearchInterval << std::endl;
+	//}
+	// else
+	//		SearchInterval = node.node().text().as_int();
 
 	//===============================================================
 	node = dconfig.select_node("//Config/PersistDb");
@@ -194,6 +194,22 @@ bool Config::ReadConfig()
 	}
 	else
 		PersistDb = node.node().text().as_bool();
+
+	//===============================================================
+	node = dconfig.select_node("//Config/EgsFolder");
+	if (!node)
+	{
+		std::cout << "EgsFolder not found on config! Egs xml will not be generated" << std::endl;
+	}
+	else
+	{
+		EgsFolder = node.node().text().as_string();
+		if (!std::filesystem::exists(EgsFolder))
+		{
+			EgsFolder.clear();
+			std::cout << "EgsFolder not exists! Egs xml will not be generated" << std::endl;
+		}
+	}
 
 	back = true;
 	return back;
@@ -245,12 +261,15 @@ bool Config::WriteConfig()
 	tmp = root.append_child("lastSearchTime");
 	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(lastSearchTime.c_str());
 
-	tmp = root.append_child("SearchInterval");
-	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(std::to_string(SearchInterval).c_str());
+	// tmp = root.append_child("SearchInterval");
+	// back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(std::to_string(SearchInterval).c_str());
 
 	tmp = root.append_child("PersistDb");
 	int iPersisDb = PersistDb == true ? 1 : 0;
 	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(std::to_string(iPersisDb).c_str());
+
+	tmp = root.append_child("EgsFolder");
+	back = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(EgsFolder.c_str());
 
 	back = dconfig.save_file(ConfigFile.c_str(), PUGIXML_TEXT("  "));
 

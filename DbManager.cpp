@@ -28,24 +28,27 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     //    q.append("Insert into assets(assetid,assetsource,title,headline,body,mediatype,mediafile,mediapath,assetstate,firsttime,lasttime,ondate)");
     //  q.append("values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)");
 
-    q.append("CALL saveasset($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)");
+    q.append("CALL saveasset($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)");
 
     back = pdb.Connect();
     if (back.Success == false)
         return back;
 
-    int iagencysource, imediatype, istate, isuccess;
-    int *ipagencysource, *ipmediatype, *ipstate, *ipsuccess;
+    int iagencysource, imediatype, istate, isuccess, iurgency;
+    int *ipagencysource, *ipmediatype, *ipstate, *ipsuccess, *ipurgency;
 
     iagencysource = pAsset->AgencySource;
     imediatype = pAsset->MediaType;
     istate = pAsset->State;
     isuccess = pAsset->Success;
+    iurgency = pAsset->urgency;
 
     ipagencysource = &iagencysource;
     ipmediatype = &imediatype;
     ipstate = &istate;
     ipsuccess = &isuccess;
+    ipurgency = &iurgency;
+
     std::string strFirstTime = pAsset->FirstTime.asString();
     std::string strLastTime = pAsset->LastTime.asString();
     std::string strOndate = pAsset->OnDate.asString();
@@ -65,6 +68,7 @@ BackObject AADb::SaveAsset(cAsset *pAsset)
     pdb.AddParam((char *)pAsset->ErrMessage.c_str(), pAsset->ErrMessage.length(), PgFormats::binary, PgTypeOids::oid_text);
     pdb.AddParam((char *)pAsset->ProxyFile.c_str(), pAsset->ProxyFile.length(), PgFormats::binary, PgTypeOids::oid_varchar);
     pdb.AddParam((char *)pAsset->itemUrl.c_str(), pAsset->itemUrl.length(), PgFormats::binary, PgTypeOids::oid_varchar);
+    pdb.AddParam((char *)ipurgency, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
 
     back = pdb.DoExecuteEx(q);
 
@@ -116,7 +120,7 @@ BackObject AADb::GetAssets(std::list<cAsset> *pList, std::string pDate, int isuc
     }
     std::string q;
     q.append("select assetid,assetsource,headline,body,mediatype,mediafile,mediapath,assetstate,assetsuccess,");
-    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying, errmessage, proxyfile, itemurl from assets ");
+    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying, errmessage, proxyfile, itemurl,urgency from assets ");
     q.append("where ondate::date = $1 and assetsuccess = $2 and assetsource =$3");
     if (nitems > 0)
         q.append(" limit $4");
@@ -153,7 +157,7 @@ BackObject AADb::GetAsset(cAsset *pAsset)
     }
     std::string q;
     q.append("select assetid,assetsource,headline,body,mediatype,mediafile,mediapath,assetstate,assetsuccess,");
-    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying,errmessage,proxyfile,itemurl from assets where assetid = $1 limit 1");
+    q.append("firsttime::character varying,lasttime::character varying,ondate::character varying,errmessage,proxyfile,itemurl,urgency from assets where assetid = $1 limit 1");
     back = pdb.Connect();
     if (back.Success == false)
         return back;
@@ -239,6 +243,7 @@ void AADb::DumpAsset(cAsset *pAsset)
     std::cout << "ErrMessage : " << pAsset->ErrMessage << std::endl;
     std::cout << "ProxyFile : " << pAsset->ProxyFile << std::endl;
     std::cout << "ItemUrl : " << pAsset->itemUrl << std::endl;
+    std::cout << "Urgency : " << pAsset->urgency << std::endl;
 }
 
 void AADb::DumpAssets(std::list<cAsset> *pAssets)
@@ -321,6 +326,10 @@ BackObject AADb::PopulateSingle(RowData *rdp, cAsset *pAsset)
         else if (j->fieldName == "itemurl")
         {
             pAsset->itemUrl = ((FieldData<std::string> *)j)->GetValue();
+        }
+        else if (j->fieldName == "urgency")
+        {
+            pAsset->urgency = ((FieldData<int> *)j)->GetValue();
         }
     }
 

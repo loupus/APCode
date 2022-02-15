@@ -40,6 +40,16 @@ enum MediaTypes
 	mt_video = 2
 };
 
+enum AssetUrgencies
+{
+	ur_none = 0,
+	ur_flash = 1,
+	ur_bulletin = 2,
+	ur_urgent = 3,
+	ur_routine = 4
+};
+
+
 class AssetTime
 {
 private:
@@ -166,6 +176,7 @@ public:
 		State = static_cast<int>(AssetState::astat_NONE);
 		Success = static_cast<int>(AssetSuccess::asSuc_NoProblem);
 		IsDeleted = false;
+		urgency = 0;
 	}
 
 	~cAsset()
@@ -194,6 +205,7 @@ public:
 	std::string itemUrl;
 	std::string bodyLink;
 	std::string videoLink;
+	int urgency;
 
 	std::string toJsonStr()
 	{
@@ -212,7 +224,9 @@ public:
 			{"ondate", this->OnDate.asString()},
 			{"errmessage", this->ErrMessage},
 			{"proxyfile", this->ProxyFile},
-			{"itemurl", this->itemUrl}};
+			{"itemurl", this->itemUrl},
+			{"urgency", this->urgency}
+			};
 
 		return j.dump();
 	}
@@ -234,7 +248,10 @@ public:
 			{"ondate", this->OnDate.asString()},
 			{"errmessage", this->ErrMessage},
 			{"proxyfile", this->ProxyFile},
-			{"itemurl", this->itemUrl}};
+			{"itemurl", this->itemUrl},
+			{"urgency", this->urgency}
+			};
+
 
 		return j;
 	}
@@ -267,6 +284,7 @@ public:
 		State = static_cast<int>(AssetState::astat_NONE);
 		Success = static_cast<int>(AssetSuccess::asSuc_NoProblem);
 		IsDeleted = false;
+		urgency = 0;
 	}
 	std::string GetProxyName()
 	{

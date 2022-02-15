@@ -138,18 +138,16 @@ BackObject apapi::GenerateNewsML(cAsset *pAsset)
 {
     BackObject back;
 
-
     bool rv = false;
     pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file("NewsML_Template.xml");
 
-	if (!result)
-	{
-		std::cout << "Loading template newsml file failed !" << std::endl;
-		std::cout << result.description() << std::endl;
-		return back;
-	}
-
+    if (!result)
+    {
+        std::cout << "Loading template newsml file failed !" << std::endl;
+        std::cout << result.description() << std::endl;
+        return back;
+    }
 
     pugi::xpath_node xnode = doc.select_node("//NewsML/NewsEnvelope/DateAndTime");
     if (!xnode)
@@ -158,6 +156,7 @@ BackObject apapi::GenerateNewsML(cAsset *pAsset)
         back.Success = false;
         return back;
     }
+    rv = xnode.node().set_value(pAsset->OnDate.asString().c_str());
 
     xnode = doc.select_node("//NewsML/NewsItem/Identification/NewsIdentifier/DateId");
     if (!xnode)
@@ -166,15 +165,37 @@ BackObject apapi::GenerateNewsML(cAsset *pAsset)
         back.Success = false;
         return back;
     }
-
-
     rv = xnode.node().set_value(pAsset->OnDate.asTString().c_str());
 
+    xnode = doc.select_node("//NewsML/NewsItem/Identification/NewsIdentifier/NewsItemId");
+    if (!xnode)
+    {
+        back.ErrDesc = "failed to get datetime of template newsml";
+        back.Success = false;
+        return back;
+    }
+    rv = xnode.node().set_value(pAsset->Id.c_str());
 
+    xnode = doc.select_node("//NewsML/NewsItem/NewsComponent/NewsLines/HeadLine");
+    if (!xnode)
+    {
+        back.ErrDesc = "failed to get datetime of template newsml";
+        back.Success = false;
+        return back;
+    }
+    rv = xnode.node().set_value(pAsset->HeadLine.c_str());
 
+    xnode = doc.select_node("//NewsML/NewsItem/NewsComponent/NewsComponent/ContentItem/DataContent/html/div");
+    if (!xnode)
+    {
+        back.ErrDesc = "failed to get datetime of template newsml";
+        back.Success = false;
+        return back;
+    }
+    rv = xnode.node().set_value(pAsset->Body.c_str());
 
-
-    doc.save_file("newsmltest.xml", PUGIXML_TEXT("  "));
+    std::string fname = Config::EgsFolder + pAsset->Id + ".xml";
+    doc.save_file(fname.c_str(), PUGIXML_TEXT("  "));
 
     return back;
 }
@@ -184,7 +205,7 @@ BackObject apapi::ParseSearch(std::string &pjson)
     BackObject back;
 
     nlohmann::json j = nlohmann::json::parse(pjson);
-    std::string itemtype, itemdate;
+    std::string itemtype, itemdate, tempstr;
     nlohmann::json jtmp;
     cAsset tmp;
     int TotalItems = 0;
@@ -252,7 +273,12 @@ BackObject apapi::ParseSearch(std::string &pjson)
             return back;
 
         if (!((tmp.Language == "en") || (tmp.Language == "tr"))) // ingilizce veya turkce degil
+        {
+            tempstr = "item with id " + tmp.Id + " language: " + tmp.Language + " will be discarded";
+            Logger::WriteLog(tempstr);
+            tempstr.clear();
             continue;
+        }
 
         if (tmp.MediaType == MediaTypes::mt_text)
         {
@@ -399,6 +425,10 @@ BackObject apapi::GetLanguage(std::string &pStrUrl, cAsset *pAsset)
 
     nlohmann::json jtmp = uriJson["data"]["item"]["language"];
     pAsset->Language = GetJsonValue<std::string>(jtmp);
+
+    jtmp = uriJson["data"]["item"]["urgency"];
+    pAsset->urgency = GetJsonValue<int>(jtmp);
+
     return back;
 }
 
@@ -530,6 +560,50 @@ BackObject apapi::GetNonCompletedAssets(int nitems)
     return back;
 }
 
+BackObject apapi::GenerateEgsXml(cAsset *pAsset)
+{
+    BackObject back;
+    back.Success = false;
+    back.ErrDesc = "failed to create egs xml";
+    bool rv = false;
+
+    pugi::xml_document doc;
+    pugi::xml_node tmp;
+    auto root = doc.append_child("Dummy");
+
+    tmp = root.append_child("NewsItemId");
+    rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(pAsset->Id.c_str());
+    if (!rv)
+        return back;
+    tmp = root.append_child("DateAndTime");
+    rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(pAsset->OnDate.asString().c_str());
+    if (!rv)
+        return back;
+    tmp = root.append_child("HeadLine");
+    rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(pAsset->HeadLine.c_str());
+    if (!rv)
+        return back;
+    tmp = root.append_child("Body");
+    rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(pAsset->Body.c_str());
+    if (!rv)
+        return back;
+
+    std::string fname = Config::EgsFolder + pAsset->Id + ".xml";
+    rv = doc.save_file(fname.c_str(), PUGIXML_TEXT("  "),pugi::format_no_escapes);
+    if (!rv)
+    {
+        back.Success = false;
+        back.ErrDesc = "failed to save egs xml";
+    }
+    else
+    {
+        back.Success = true;
+        back.ErrDesc.clear();
+    }
+
+    return back;
+}
+
 void *apapi::ProcessFunc(void *parg)
 {
     apapi *pObj = reinterpret_cast<apapi *>(parg);
@@ -634,6 +708,14 @@ void apapi::WorkList()
             else
             {
                 pAsset->State = AssetState::astat_DOCUMENT_GET;
+                if (!Config::EgsFolder.empty())
+                {
+                    back = GenerateEgsXml(pAsset);
+                    if (!back.Success)
+                    {
+                        Logger::WriteLog(back.ErrDesc, LogType::error);
+                    }
+                }
             }
 
             // update db
@@ -813,7 +895,7 @@ void apapi::Start()
     rv = pthread_detach(thHandle);
     if (rv != 0)
     {
-        std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;
+       // std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;
     }
     else
     {
