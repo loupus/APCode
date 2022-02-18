@@ -1,5 +1,6 @@
 #include "winsock2.h"
 #include <iostream>
+#include <filesystem>
 #include "Globals.hpp"
 #include "APapi.hpp"
 #include "Config.hpp"
@@ -33,30 +34,34 @@ BackObject apapi::GetAccountInfo()
 {
     BackObject back;
     // get account info
-    std::string strurl = Config::apiRootUrl + Config::apiAccountUrl + "?apikey=" + Config::apiKey;
-    std::wstring strback;
+    // std::string strurl = Config::apiRootUrl + Config::apiAccountUrl + "?apikey=" + Config::apiKey;
 
-    back = ht.DoGet(strurl);
+    std::string strRootUrl = Config::AsStr("//Config/Agencies/AP/apiRootUrl");
+    std::string strAccountUrl = Config::AsStr("//Config/Agencies/AP/apiAccountUrl");
+    std::string strurltmp = strRootUrl + strAccountUrl + strApiKey;
+    std::string strurl;
+
+    back = ht.DoGet(strurltmp);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
 
     // get account plans
-    strurl = Config::apiRootUrl + Config::apiAccountUrl + "/plans" + "?apikey=" + Config::apiKey;
+    strurl = strurltmp + "/plans" + strApiKey;
     back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
 
     // get account quotas
-    strurl = Config::apiRootUrl + Config::apiAccountUrl + "/quotas" + "?apikey=" + Config::apiKey;
+    strurl = strurltmp + "/quotas" + strApiKey;
     back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
     Logger::WriteLog(back.StrValue);
 
     // get account downloads
-    strurl = Config::apiRootUrl + Config::apiAccountUrl + "/downloads" + "?apikey=" + Config::apiKey;
+    strurl = strurltmp + "/downloads" + strApiKey;
     back = ht.DoGet(strurl);
     if (!back.Success)
         return back;
@@ -72,10 +77,12 @@ BackObject apapi::Search()
     if (NextPage.empty())
     {
         UpdateSearchTime();
-        std::string strQuery = Globals::replaceStringAll(Config::apiQueryUrl, QueryReplaceString, LastSearch.asTString());
+        std::string apiQuery = Config::AsStr("//Config/Agencies/AP/apiQueryUrl");
+        std::string apiRoot = Config::AsStr("//Config/Agencies/AP/apiRootUrl");
+        std::string strQuery = Globals::replaceStringAll(apiQuery, QueryReplaceString, LastSearch.asTString());
         strQuery = ht.UrlEncode(strQuery);
         strQuery = "content/search?q=" + strQuery;
-        strurl = Config::apiRootUrl + strQuery + "&page_size=" + std::to_string(PageSize) + "&in_my_plan=true";
+        strurl = apiRoot + strQuery + "&page_size=" + std::to_string(PageSize) + "&in_my_plan=true";
     }
     else
         strurl = NextPage;
@@ -107,7 +114,8 @@ void apapi::UpdateSearchTime()
 
     if (LastSearch.GetTime() == 0)
     {
-        if (LastSearch.fromString(Config::lastSearchTime.c_str()))
+        // if (LastSearch.fromString(Config::lastSearchTime.c_str()))
+        if (LastSearch.fromString(Config::AsStr("//Config/Agencies/AP/lastSearchTime").c_str()))
         {
             time_t ozaman = LastSearch.GetTime();
             dif = difftime(now_t, bugun_t);
@@ -128,76 +136,10 @@ void apapi::UpdateSearchTime()
         LastSearch = NextSearch;
         NextSearch = now_t;
     }
-    Config::lastSearchTime = LastSearch.asString();
-    Config::WriteConfig();
+
+    Config::SetValue("//Config/Agencies/AP/lastSearchTime", LastSearch.asString().c_str());
+    Config::WriteConfigEx();
     Logger::WriteLog("LastSearch: " + LastSearch.asString());
-    // std::cout << "LastSearch: " << LastSearch.asString() << std::endl;
-}
-
-BackObject apapi::GenerateNewsML(cAsset *pAsset)
-{
-    BackObject back;
-
-    bool rv = false;
-    pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file("NewsML_Template.xml");
-
-    if (!result)
-    {
-        std::cout << "Loading template newsml file failed !" << std::endl;
-        std::cout << result.description() << std::endl;
-        return back;
-    }
-
-    pugi::xpath_node xnode = doc.select_node("//NewsML/NewsEnvelope/DateAndTime");
-    if (!xnode)
-    {
-        back.ErrDesc = "failed to get datetime of template newsml";
-        back.Success = false;
-        return back;
-    }
-    rv = xnode.node().set_value(pAsset->OnDate.asString().c_str());
-
-    xnode = doc.select_node("//NewsML/NewsItem/Identification/NewsIdentifier/DateId");
-    if (!xnode)
-    {
-        back.ErrDesc = "failed to get datetime of template newsml";
-        back.Success = false;
-        return back;
-    }
-    rv = xnode.node().set_value(pAsset->OnDate.asTString().c_str());
-
-    xnode = doc.select_node("//NewsML/NewsItem/Identification/NewsIdentifier/NewsItemId");
-    if (!xnode)
-    {
-        back.ErrDesc = "failed to get datetime of template newsml";
-        back.Success = false;
-        return back;
-    }
-    rv = xnode.node().set_value(pAsset->Id.c_str());
-
-    xnode = doc.select_node("//NewsML/NewsItem/NewsComponent/NewsLines/HeadLine");
-    if (!xnode)
-    {
-        back.ErrDesc = "failed to get datetime of template newsml";
-        back.Success = false;
-        return back;
-    }
-    rv = xnode.node().set_value(pAsset->HeadLine.c_str());
-
-    xnode = doc.select_node("//NewsML/NewsItem/NewsComponent/NewsComponent/ContentItem/DataContent/html/div");
-    if (!xnode)
-    {
-        back.ErrDesc = "failed to get datetime of template newsml";
-        back.Success = false;
-        return back;
-    }
-    rv = xnode.node().set_value(pAsset->Body.c_str());
-
-    std::string fname = Config::EgsFolder + pAsset->Id + ".xml";
-    doc.save_file(fname.c_str(), PUGIXML_TEXT("  "));
-
-    return back;
 }
 
 BackObject apapi::ParseSearch(std::string &pjson)
@@ -325,9 +267,15 @@ BackObject apapi::ParseTextXml(std::string &pXml, cAsset *pAsset)
         return back;
     }
 
+    //  std::string aa = pugi::
+
     std::stringstream ss;
     node.node().print(ss);
-    std::string bodydata = ss.str(); // todo burda bazen sapıtıyor
+    std::string bodydata = ss.str();
+
+    bodydata = Globals::ReplaceString2(bodydata, "<block>", "");
+    bodydata = Globals::ReplaceString2(bodydata, "</block>", "");
+
     ReplaceHtml(bodydata);
     pAsset->Body = bodydata;
     if (pAsset->Body.empty())
@@ -338,6 +286,41 @@ BackObject apapi::ParseTextXml(std::string &pXml, cAsset *pAsset)
     }
     back.Success = true;
     return back;
+}
+
+void apapi::RemoveHrefTags(std::string &pStr)
+{
+
+    std::string beginstr = "<a href";
+    std::string endstr = ">";
+    std::string removestr = "";
+    std::string emptystr = "";
+    size_t beginpos = 0, endpos = 0;
+    do
+    {
+        beginpos = Globals::GetFirstIndexOf(pStr, beginstr, beginpos);
+        if (beginpos > 0 && beginpos != std::string::npos)
+        {
+            endpos = Globals::GetFirstIndexOf(pStr, endstr, beginpos);
+            if (endpos == std::string::npos)
+                break;
+            removestr = Globals::GetSubString(pStr, beginpos, (endpos - beginpos + 1));
+            pStr = Globals::ReplaceString(pStr, removestr, emptystr);
+            beginpos = endpos;
+        }
+
+        beginpos = Globals::GetFirstIndexOf(pStr, beginstr, beginpos);
+
+    } while (beginpos > 0 && beginpos != std::string::npos);
+
+    beginstr = "</a>";
+    pStr = Globals::ReplaceString(pStr, beginstr, emptystr);
+
+    beginstr = "<p />";
+    pStr = Globals::ReplaceString(pStr, beginstr, emptystr);
+
+    // bodytext = Globals::replaceStringAll(bodytext,"<a href=\"","link:");
+    // bodytext = Globals::replaceStringAll(bodytext,"</a>","");
 }
 
 template <typename T>
@@ -399,7 +382,7 @@ void apapi::IsSuccess(nlohmann::json &pJson, BackObject &pBack)
 
 std::string apapi::GetApiKey()
 {
-    std::string back = "&apikey=" + Config::apiKey;
+    std::string back = "&apikey=" + Config::AsStr("//Config/Agencies/AP/apiKey");
     return back;
 }
 
@@ -520,10 +503,13 @@ BackObject apapi::GetVideo(cAsset *pAsset)
             return back;
         }
     }
-
+    // configMap["//Config/Agencies/AP/apiKey"]
     strurl = pAsset->videoLink + strApiKey;
-
-    back = ht.DoGetWritefile(strurl, Config::videoDownloadFolder + pAsset->MediaFile);
+    std::string fpath = Config::AsStr("//Config/Agencies/AP/videoDownloadFolder") + pAsset->MediaFile;
+    if (!std::filesystem::exists(fpath))
+        back = ht.DoGetWritefile(strurl, fpath);
+    else
+        Logger::WriteLog("file already exists : " + fpath);
 
     return back;
 }
@@ -583,13 +569,25 @@ BackObject apapi::GenerateEgsXml(cAsset *pAsset)
     rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(pAsset->HeadLine.c_str());
     if (!rv)
         return back;
+
+    std::string bodytext = pAsset->Body.c_str();
+    RemoveHrefTags(bodytext);
+    bodytext.append("=================================================\n");
+    bodytext.append("news id: ");
+    bodytext.append(pAsset->Id);
+    bodytext.append(" news date: ");
+    bodytext.append(pAsset->OnDate.asString() + "\n");
+
+    if (pAsset->urgency == AssetUrgencies::ur_flash)
+        bodytext.append("acelehaber");
+
     tmp = root.append_child("Body");
-    rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(pAsset->Body.c_str());
+    rv = tmp.append_child(pugi::xml_node_type::node_pcdata).set_value(bodytext.c_str());
     if (!rv)
         return back;
 
-    std::string fname = Config::EgsFolder + pAsset->Id + ".xml";
-    rv = doc.save_file(fname.c_str(), PUGIXML_TEXT("  "),pugi::format_no_escapes);
+    std::string fname = Config::AsStr("//Config/Agencies/AP/EgsFolder") + pAsset->Id + ".xml";
+    rv = doc.save_file(fname.c_str(), PUGIXML_TEXT("  "), pugi::format_no_escapes);
     if (!rv)
     {
         back.Success = false;
@@ -611,6 +609,8 @@ void *apapi::ProcessFunc(void *parg)
         return nullptr;
     std::cout << "AP Agency process is starting..." << std::endl;
     BackObject back;
+    time_t pbegin, pend;
+    int tdiff;
     //  int QueueSize = 0;
     //  int QueueCapacity = 0;
 
@@ -637,6 +637,7 @@ void *apapi::ProcessFunc(void *parg)
     while (true)
     {
         Logger::WriteLog("=============================================================================================================");
+        pbegin = time(0);
         // Logger::WriteLog("Looping");
         if (pObj->StopFlag)
             goto cikis;
@@ -652,7 +653,8 @@ void *apapi::ProcessFunc(void *parg)
         pObj->WorkList();
 
         // update db
-        if (Config::PersistDb)
+
+        if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
         {
             back = pObj->db.SaveAssets(pObj->Assets.GetPointer());
             if (!back.Success)
@@ -666,7 +668,12 @@ void *apapi::ProcessFunc(void *parg)
         pObj->Assets.RemoveCompleted();
         int asize2 = pObj->Assets.GetSize();
         Logger::WriteLog(std::to_string(asize - asize2) + " completed assets removed from list, remaining " + std::to_string(asize2));
-        Sleep(Config::DownloadWaitSeconds * 1000);
+        pend = time(0);
+        tdiff = difftime(pend, pbegin);
+        Logger::WriteLog("period time elapsed: " + std::to_string(tdiff) + " seconds");
+        if (tdiff >= Config::AsInt("//Config/Agencies/AP/SleepSeconds"))
+            continue; // beklemeye gerek yok
+        Sleep(Config::AsInt("//Config/Agencies/AP/SleepSeconds") * 1000);
     }
 
 cikis:
@@ -686,6 +693,7 @@ void apapi::WorkList()
     BackObject back;
 
     std::list<cAsset> *Items = Assets.GetPointer();
+    Logger::WriteLog("Items Count : " + std::to_string(Items->size()));
 
     for (auto i = Items->begin(); i != Items->end(); i++)
     {
@@ -708,7 +716,7 @@ void apapi::WorkList()
             else
             {
                 pAsset->State = AssetState::astat_DOCUMENT_GET;
-                if (!Config::EgsFolder.empty())
+                if (!Config::AsStr("//Config/Agencies/AP/EgsFolder").empty())
                 {
                     back = GenerateEgsXml(pAsset);
                     if (!back.Success)
@@ -719,7 +727,7 @@ void apapi::WorkList()
             }
 
             // update db
-            if (Config::PersistDb)
+            if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
             {
                 back = db.SaveAsset(pAsset);
                 if (!back.Success)
@@ -739,9 +747,15 @@ void apapi::WorkList()
                 Logger::WriteLog(back.ErrDesc, LogType::error);
                 pAsset->Success = AssetSuccess::asSuc_Failed;
             }
+            else
+            {
+                pAsset->State = AssetState::astat_VIDEO_DOWNLOADED;
+                pAsset->MediaPath = Config::AsStr("//Config/Agencies/AP/videoDownloadFolder");
+                pAsset->LastTime = time(0);
+            }
 
             // update db
-            if (Config::PersistDb)
+            if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
             {
                 back = db.SaveAsset(pAsset);
                 if (!back.Success)
@@ -749,12 +763,6 @@ void apapi::WorkList()
                     pAsset->Success = AssetSuccess::asSuc_Failed;
                     pAsset->ErrMessage = back.ErrDesc;
                     Logger::WriteLog(back.ErrDesc, LogType::error);
-                }
-                else
-                {
-                    pAsset->State = AssetState::astat_VIDEO_DOWNLOADED;
-                    pAsset->MediaPath = Config::videoDownloadFolder;
-                    pAsset->LastTime = time(0);
                 }
             }
             break;
@@ -770,16 +778,16 @@ void apapi::WorkList()
         if (pAsset->MediaType == MediaTypes::mt_text && pAsset->State == AssetState::astat_DOCUMENT_GET)
             pAsset->Success = AssetSuccess::asSuc_Completed;
 
-        // todo burda mı callbackde mi?
         if (pAsset->MediaType == MediaTypes::mt_video && pAsset->State == AssetState::astat_VIDEO_DOWNLOADED)
             pAsset->Success = AssetSuccess::asSuc_Completed;
 
         if (StopFlag)
             break;
-        Sleep(1000 * 10);
+        Sleep(1000);
         if (StopFlag)
             break;
     }
+    Logger::WriteLog("Worklist completed");
 }
 
 /*
@@ -895,7 +903,7 @@ void apapi::Start()
     rv = pthread_detach(thHandle);
     if (rv != 0)
     {
-       // std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;
+        // std::cout << "ERR ===> Transcode thread create failed! RV:" << std::endl;
     }
     else
     {

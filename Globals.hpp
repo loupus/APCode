@@ -27,9 +27,11 @@ public:
 	static std::string joinString(std::string pdelimiter, std::vector<std::string>* strvec);
 
 	static std::size_t GetCharLen(std::string& pstr);
-	static std::size_t GetFirstIndexOf(std::string& pstr, std::string& psrch);
-	static std::size_t GetLastIndexOf(std::string& pstr, std::string& psrch);
+	static std::size_t GetFirstIndexOf(std::string &pstr, std::string &psrch, std::size_t pos=0ULL);
+	static std::size_t GetLastIndexOf(std::string& pstr, std::string& psrch, std::size_t pos=std::string::npos);
 	static std::string GetSubString(std::string& pstr, std::size_t  pbegin, std::size_t  plength = std::string::npos);
+	static std::string ReplaceString(std::string& StrSource, std::string& StrToRemove, std::string& StrWith);
+	static std::string ReplaceString2(std::string& StrSource, const char* StrToRemove, const char* StrWith);
 
 	static std::string GetNowStr();
 

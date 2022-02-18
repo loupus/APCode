@@ -15,8 +15,8 @@ AADb::~AADb()
 
 void AADb::Initiliaze()
 {
-    conStr = "hostaddr =" + Config::dbServer + " port=" + Config::dbPort + " dbname=" + Config::dbName + " user=" + Config::dbUser +
-             " password=" + Config::dbPass + " connect_timeout=5 client_encoding=UTF8";
+    conStr = "hostaddr =" + Config::AsStr("//Config/Database/dbServer") + " port=" + Config::AsStr("//Config/Database/dbPort") + " dbname=" + Config::AsStr("//Config/Database/dbName")
+         + " user=" + Config::AsStr("//Config/Database/dbUser")+ " password=" + Config::AsStr("//Config/Database/dbPass") + " connect_timeout=5 client_encoding=UTF8";
     pdb.SetConStr(conStr);
 }
 

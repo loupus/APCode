@@ -40,25 +40,25 @@ std::size_t Globals::GetCharLen(std::string &pstr)
     return back;
 }
 
-std::size_t  Globals::GetFirstIndexOf(std::string &pstr, std::string &psrch)
+std::size_t Globals::GetFirstIndexOf(std::string &pstr, std::string &psrch, std::size_t pos)
 {
     size_t back = 0;
     std::wstring wstr = to_wstring(pstr);
     std::wstring wsrch = to_wstring(psrch);
-    back = wstr.find_first_of(wsrch);
+    back = wstr.find(wsrch, pos);
     return back;
 }
 
-std::size_t  Globals::GetLastIndexOf(std::string &pstr, std::string &psrch)
+std::size_t Globals::GetLastIndexOf(std::string &pstr, std::string &psrch, std::size_t pos)
 {
     size_t back = 0;
     std::wstring wstr = to_wstring(pstr);
     std::wstring wsrch = to_wstring(psrch);
-     back = wstr.find_last_of(wsrch);
+    back = wstr.find(wsrch, pos);
     return back;
 }
 
-std::string Globals::GetSubString(std::string &pstr, std::size_t  pbegin, std::size_t  plength)
+std::string Globals::GetSubString(std::string &pstr, std::size_t pbegin, std::size_t plength)
 {
     std::string back = "";
     std::wstring wstr = to_wstring(pstr);
@@ -67,11 +67,11 @@ std::string Globals::GetSubString(std::string &pstr, std::size_t  pbegin, std::s
     return back;
 }
 
-std::string Globals::GetNowStr() 
+std::string Globals::GetNowStr()
 {
     time_t now;
     time(&now);
-    std::tm *tmpFirstTime = localtime(&now);         // todo burda patlıyor
+    std::tm *tmpFirstTime = localtime(&now); // todo burda patlıyor
     std::ostringstream dtss;
     dtss << std::put_time(tmpFirstTime, "%Y-%m-%d");
     std::string strdate = dtss.str();
@@ -362,5 +362,49 @@ std::string Globals::joinString(std::string pdelimiter, std::vector<std::string>
         back.append((*it));
         back.append(pdelimiter);
     }
+    return back;
+}
+
+std::string Globals::ReplaceString(std::string &StrSource, std::string &StrToRemove, std::string &StrWith)
+{
+    std::string back = StrSource;
+    if (StrSource.empty())
+        return back;
+    std::wstring wstrsource = to_wstring(StrSource);
+    std::wstring wstrtoremove = to_wstring(StrToRemove);
+    std::wstring wstrwith = to_wstring(StrWith);
+    std::wstring temp;
+
+    std::size_t pos = 0;
+    while ((pos = wstrsource.find(wstrtoremove, pos)) != std::wstring::npos)
+    {
+        temp = wstrsource.replace(pos, wstrtoremove.length(), wstrwith);
+        pos += wstrwith.length();
+    }
+
+    if (!temp.empty())
+        back = to_string(temp);
+    return back;
+}
+
+std::string Globals::ReplaceString2(std::string& StrSource, const char* StrToRemove, const char* StrWith)
+{
+    std::string back = StrSource;
+    if (StrSource.empty())
+        return back;
+    std::wstring wstrsource = to_wstring(StrSource);
+    std::wstring wstrtoremove = to_wstring(StrToRemove);
+    std::wstring wstrwith = to_wstring(StrWith);
+    std::wstring temp;
+
+    std::size_t pos = 0;
+    while ((pos = wstrsource.find(wstrtoremove, pos)) != std::wstring::npos)
+    {
+        temp = wstrsource.replace(pos, wstrtoremove.length(), wstrwith);
+        pos += wstrwith.length();
+    }
+
+    if (!temp.empty())
+        back = to_string(temp);
     return back;
 }

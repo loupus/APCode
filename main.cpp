@@ -35,18 +35,17 @@ void TestSearch()
     //    std::cout << back.StrValue << std::endl;
 }
 
-apapi *ap;
 void TestProcess()
 {
-    BackObject back;
+    //BackObject back;
 
-    ap = new apapi();
-    if (!ap->Initiliaze())
-    {
-        std::cout << "ap api initiliaze failed!" << std::endl;
-        return;
-    }
-    ap->Start();
+  //  ap = new apapi();
+   // if (!ap->Initiliaze())
+    //{
+   //     std::cout << "ap api initiliaze failed!" << std::endl;
+   //     return;
+   // }
+   // ap->Start();
 
     // if(!back.Success)
     //   std::cout << back.ErrDesc << std::endl;
@@ -101,26 +100,73 @@ int LocalSettingsC(std::string pLocal)
     return 0;
 }
 
-void TextNewsML()
+void Menu()
 {
-  //  ap = new apapi();
-  //  ap->GenerateNewsML();
+
+    std::string logo = R"(
+    +-+ +-+ +-+ +-+ +-+   +-+ +-+ +-+ +-+  +-+ +-+ +-+ +-+ +-+ 
+    |N| |e| |s| |e| |s|   |N| |e| |w| |s|  |A| |g| |e| |n| |t|   
+    +-+ +-+ +-+ +-+ +-+   +-+ +-+ +-+ +-+  +-+ +-+ +-+ +-+ +-+ )";
+
+    std::cout << "========================================================================" << std::endl;
+    std::cout << logo << std::endl;
+    std::cout << "\tVersion 1.1" << std::endl;
+    std::cout << std::endl;
+    std::cout << "\t exit              => to exit program" << std::endl;
+    std::cout << "\t start             => start loop" << std::endl;
+    std::cout << "\t stop              => stop loop" << std::endl;
+    std::cout << "\t menu              => bring menu" << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "Hakan Soyalp soyalpha@gmail.com" << std::endl;
+    std::cout << "========================================================================" << std::endl;
 }
 
 int main()
 {
     int back = 0;
-    std::cout << "AP Code starting" << std::endl;
+    std::string userInput;
     back = LocalSettingsC("Turkish");
+    Config::ReadConfigEx();
 
-    // TestXml();
-    // return 0;
+    apapi *ap = nullptr;
+    ap = new apapi();
+    if (!ap->Initiliaze())
+    {
+        std::cout << "ap api initiliaze failed!" << std::endl;
+        return -1;
+    }
 
-    Config::ReadConfig();
-       TestProcess();
+    Menu();
+    while (true)
+    {
+        std::cin >> userInput;
+        if (userInput == "start")
+        {
+            ap->Start();
+        }
+        else if (userInput == "stop")
+        {
+            if (ap != nullptr)
+                ap->Stop();
+        }
+        else if (userInput == "menu")
+        {
+            Menu();
+        }
 
-   // TextNewsML();
-    std::cin.get();
-    system("pause");
+        else if (userInput == "exit")
+        {
+            break;
+        }
+        Sleep(1000);
+    }
+
+    if (ap != nullptr)
+    {
+        ap->Stop();
+        delete ap;
+        ap = nullptr;
+    }
     return back;
 }

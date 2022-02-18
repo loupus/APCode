@@ -42,6 +42,7 @@ private:
   BackObject GenerateEgsXml(cAsset *pAsset);
   void UpdateSearchTime();
   void WorkList();
+  void RemoveHrefTags(std::string &pStr);
 
 public:
   apapi();
@@ -49,7 +50,6 @@ public:
   bool Initiliaze();
   BackObject GetAccountInfo();
   BackObject Search();
-  BackObject GenerateNewsML(cAsset *pAsset);
   static void *ProcessFunc(void *parg);
   void ReplaceHtml(std::string &pstr);
 

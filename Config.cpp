@@ -2,6 +2,7 @@
 #include "pugixml.hpp"
 #include "Globals.hpp"
 #include "Config.hpp"
+#include "configDic.hpp"
 
 /*
 std::string Config::dbServer = "10.1.101.13";
@@ -23,6 +24,7 @@ int Config::HoursBefore = -1;
 int Config::DownloadWaitSeconds = 1;
 */
 
+/*
 std::string Config::dbServer;
 std::string Config::dbPort;
 std::string Config::dbName;
@@ -39,9 +41,11 @@ std::string Config::EgsFolder;
 int Config::DownloadWaitSeconds = 30;
 std::string Config::lastSearchTime;
 bool Config::PersistDb = false;
+*/
 
 std::string Config::ConfigFile = ".\\AP_AjansConfig.xml";
 
+/*
 bool Config::ReadConfig()
 {
 	bool back = false;
@@ -279,4 +283,114 @@ bool Config::WriteConfig()
 	}
 
 	return back;
+}
+*/
+
+bool Config::ReadConfigEx()
+{
+	bool back = true;
+	if (!std::filesystem::exists(ConfigFile.c_str()))
+	{
+		std::cout << "Config file does not exist, creating an empty one";
+		back = WriteConfigEx();
+		return back;
+	}
+	pugi::xml_document dconfig;
+	pugi::xpath_node xnode;
+	pugi::xml_parse_result result;
+	result = dconfig.load_file(ConfigFile.c_str());
+
+	if (!result)
+	{
+		std::cout << "Loading config file failed !" << std::endl;
+		std::cout << result.description() << std::endl;
+		back = false;
+		return back;
+	}
+
+	for (auto &item : configMap)
+	{
+		xnode = dconfig.select_node(item.first.c_str());
+		if (!xnode)
+		{
+			std::cout << item.first.c_str() << " not found on config !" << std::endl;
+			back = false;
+		}
+		else
+		{
+			item.second = xnode.node().text().as_string();
+		}
+	}
+	return back;
+}
+
+bool Config::WriteConfigEx()
+{
+	bool back = true;
+	size_t configTemplateSize = sizeof(configTemplate);
+	pugi::xml_document dconfig;
+	pugi::xpath_node xnode;
+	pugi::xml_parse_result result;
+	result = dconfig.load_buffer(configTemplate, configTemplateSize);
+
+	if (!result)
+	{
+		std::cout << "Loading config file failed !" << std::endl;
+		std::cout << result.description() << std::endl;
+		back = false;
+		return back;
+	}
+
+	for (auto &item : configMap)
+	{
+		xnode = dconfig.select_node(item.first.c_str());
+		if (!xnode)
+		{
+			std::cout << item.first.c_str() << " not found on temp config !" << std::endl;
+			back = false;
+		}
+		else
+		{
+
+			back = xnode.node().text() = (item.second.c_str());
+		}
+	}
+
+	back = dconfig.save_file(ConfigFile.c_str(), PUGIXML_TEXT("  "));
+
+	if (!back)
+	{
+		std::cout << "failed to write config !" << std::endl;
+	}
+
+	return back;
+}
+
+int Config::AsInt(const char *pValueKey)
+{
+	int back = 0;
+	if (pValueKey == nullptr)
+		return back;
+	try
+	{
+		back = stoi(configMap[pValueKey]);
+	}
+	catch (...)
+	{
+	}
+
+	return back;
+}
+
+std::string Config::AsStr(const char *pValueKey)
+{
+	std::string back;
+	back = configMap[pValueKey];
+	return back;
+}
+
+void Config::SetValue(const char *pKey, const char *pValue)
+{
+	if(pKey == nullptr || pValue == nullptr) return;
+	configMap[pKey] = pValue;
 }

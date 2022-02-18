@@ -47,10 +47,10 @@ void Logger::WriteLog(std::string pLog, LogType pLogType)
 
     // logfile = "d:\\";
 
-    if (Config::logFolder.empty())
+    if (Config::AsStr("//Config/LogFolder").empty())
         logfile = ".\\";
     else
-        logfile = Config::logFolder;
+        logfile = Config::AsStr("//Config/LogFolder");
 
     // wl << std::put_time(ltm, "%F");
     wl << std::put_time(ltm, "%Y-%m-%d");

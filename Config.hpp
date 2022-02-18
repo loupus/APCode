@@ -1,14 +1,17 @@
 #include <iostream>
 #include <vector>
 
+
 class Config
 {
-    public:
+public:
+	static std::string ConfigFile;
+	/*
 	static std::string apiKey ;
 	static std::string apiRootUrl ;
 	static std::string apiAccountUrl ;
 	static std::string apiQueryUrl ;
-    static std::string logFolder ;
+	static std::string logFolder ;
 	static std::string videoDownloadFolder ;
 
 
@@ -25,8 +28,16 @@ class Config
 	static std::string lastSearchTime;
 	static bool PersistDb;
 	static std::string EgsFolder;
+	*/
 
-	static std::string ConfigFile;
+	static int AsInt(const char* pValueKey);
+	static std::string AsStr(const char* pValueKey);
+	static void SetValue(const char* pKey, const char* pValue);
+
 	static bool ReadConfig();
 	static bool WriteConfig();
+
+	static bool ReadConfigEx();
+	static bool WriteConfigEx();
+
 };
