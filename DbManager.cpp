@@ -124,12 +124,13 @@ BackObject AADb::GetAssets(std::list<cAsset> *pList, std::string pDate, int isuc
     q.append("where ondate::date = $1 and assetsuccess = $2 and assetsource =$3");
     if (nitems > 0)
         q.append(" limit $4");
+    //std::cout << q << std::endl;
     back = pdb.Connect();
     if (back.Success == false)
         return back;
     pdb.AddParam((char *)pDate.c_str(), pDate.length(), PgFormats::text, PgTypeOids::oid_timestamp, true);
-    pdb.AddParam((char *)&SourceAgency, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
     pdb.AddParam((char *)&isuccess, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
+    pdb.AddParam((char *)&SourceAgency, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);    
     if (nitems > 0)
         pdb.AddParam((char *)&nitems, sizeof(int), PgFormats::binary, PgTypeOids::oid_int4);
     back = pdb.DoExecuteEx(q);

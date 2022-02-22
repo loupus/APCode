@@ -498,7 +498,7 @@ BackObject apapi::GetVideo(cAsset *pAsset)
 
         if (pAsset->videoLink.empty()) // videolink yoksa sil
         {
-            back.ErrDesc = "failed to get videolink";
+            back.ErrDesc = "failed to get hd videolink";
             back.Success = false;
             return back;
         }
@@ -572,11 +572,8 @@ BackObject apapi::GenerateEgsXml(cAsset *pAsset)
 
     std::string bodytext = pAsset->Body.c_str();
     RemoveHrefTags(bodytext);
-    bodytext.append("=================================================\n");
-    bodytext.append("news id: ");
-    bodytext.append(pAsset->Id);
     bodytext.append(" news date: ");
-    bodytext.append(pAsset->OnDate.asString() + "\n");
+    bodytext.append(pAsset->OnDate.asString());
 
     if (pAsset->urgency == AssetUrgencies::ur_flash)
         bodytext.append("acelehaber");
@@ -611,27 +608,27 @@ void *apapi::ProcessFunc(void *parg)
     BackObject back;
     time_t pbegin, pend;
     int tdiff;
-    //  int QueueSize = 0;
-    //  int QueueCapacity = 0;
+    int QueueSize = 0;
+    int QueueCapacity = 0;
 
-    // QueueCapacity = pObj->Assets.GetBuffSize();
-    /*
-        if (Config::PersistDb)
+    QueueCapacity = pObj->Assets.GetBuffSize();
+
+    if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
+    {
+        back = pObj->GetNonCompletedAssets(QueueCapacity);
+        if (!back.Success)
         {
-            back = pObj->GetNonCompletedAssets(QueueCapacity);
-            if (!back.Success)
-            {
-                Logger::WriteLog(back.ErrDesc, LogType::warning);
-            }
-
-            QueueSize = pObj->Assets.GetSize();
-            if (QueueSize > 0) // önce yarım kalanları bitir
-            {
-                pObj->WorkList();
-                pObj->Assets.RemoveCompleted();
-            }
+            Logger::WriteLog(back.ErrDesc, LogType::warning);
         }
-    */
+
+        QueueSize = pObj->Assets.GetSize();
+        if (QueueSize > 0) // önce yarım kalanları bitir
+        {
+            pObj->WorkList();
+            pObj->Assets.RemoveCompleted();
+        }
+    }
+
     //===============================================
 
     while (true)
@@ -652,8 +649,8 @@ void *apapi::ProcessFunc(void *parg)
 
         pObj->WorkList();
 
-        // update db
-
+        /*
+       //  update db
         if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
         {
             back = pObj->db.SaveAssets(pObj->Assets.GetPointer());
@@ -663,6 +660,7 @@ void *apapi::ProcessFunc(void *parg)
                 goto cikis;
             }
         }
+        */
 
         int asize = pObj->Assets.GetSize();
         pObj->Assets.RemoveCompleted();
@@ -678,7 +676,7 @@ void *apapi::ProcessFunc(void *parg)
 
 cikis:
 
-    Logger::WriteLog("exiting download loop ...");
+    Logger::WriteLog("exiting ap loop ...");
     pthread_mutex_lock(&(pObj->mutex));
     pObj->IsComplete = true;
     pthread_mutex_unlock(&(pObj->mutex));
@@ -712,6 +710,7 @@ void apapi::WorkList()
             {
                 Logger::WriteLog(back.ErrDesc, LogType::error);
                 pAsset->Success = AssetSuccess::asSuc_Failed;
+                pAsset->ErrMessage = back.ErrDesc;
             }
             else
             {
@@ -722,21 +721,11 @@ void apapi::WorkList()
                     if (!back.Success)
                     {
                         Logger::WriteLog(back.ErrDesc, LogType::error);
+                         pAsset->ErrMessage = back.ErrDesc;
                     }
                 }
             }
 
-            // update db
-            if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
-            {
-                back = db.SaveAsset(pAsset);
-                if (!back.Success)
-                {
-                    pAsset->Success = AssetSuccess::asSuc_Failed; // todo bunu düşünelim
-                    pAsset->ErrMessage = back.ErrDesc;
-                    Logger::WriteLog(back.ErrDesc, LogType::error);
-                }
-            }
             break;
 
         case AssetState::astat_DOCUMENT_GET:
@@ -746,6 +735,7 @@ void apapi::WorkList()
             {
                 Logger::WriteLog(back.ErrDesc, LogType::error);
                 pAsset->Success = AssetSuccess::asSuc_Failed;
+                 pAsset->ErrMessage = back.ErrDesc;
             }
             else
             {
@@ -753,19 +743,6 @@ void apapi::WorkList()
                 pAsset->MediaPath = Config::AsStr("//Config/Agencies/AP/videoDownloadFolder");
                 pAsset->LastTime = time(0);
             }
-
-            // update db
-            if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
-            {
-                back = db.SaveAsset(pAsset);
-                if (!back.Success)
-                {
-                    pAsset->Success = AssetSuccess::asSuc_Failed;
-                    pAsset->ErrMessage = back.ErrDesc;
-                    Logger::WriteLog(back.ErrDesc, LogType::error);
-                }
-            }
-            break;
 
         case AssetState::astat_VIDEO_DOWNLOADED:
 
@@ -780,6 +757,17 @@ void apapi::WorkList()
 
         if (pAsset->MediaType == MediaTypes::mt_video && pAsset->State == AssetState::astat_VIDEO_DOWNLOADED)
             pAsset->Success = AssetSuccess::asSuc_Completed;
+
+        // update db
+        if (Config::AsInt("//Config/Agencies/AP/PersistDb") == 1)
+        {
+            back = db.SaveAsset(pAsset);
+            if (!back.Success)
+            {
+                pAsset->Success = AssetSuccess::asSuc_Failed; // todo bunu düşünelim
+                Logger::WriteLog(back.ErrDesc, LogType::error);
+            }
+        }
 
         if (StopFlag)
             break;
